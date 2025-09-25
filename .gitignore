@@ -1,0 +1,25 @@
+# Python bytecode files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+myvenv/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+
+# IDE/Editor
+.vscode/
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Environment variables
+.env
+
+# Backup files
+*.bak
