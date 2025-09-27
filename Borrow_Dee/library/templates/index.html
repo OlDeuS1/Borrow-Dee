@@ -1,1 +1,9 @@
-test
+{% extends "layout.html" %}
+{% load static %}
+
+{% block title %} Home {% endblock %}
+
+{% block content %}
+    <p class="text-gray-700">This is the home page of the library application.</p>
+    <a class="text-blue-500 hover:underline" href="{% url 'login' %}">Login</a>
+{% endblock %}

@@ -12,3 +12,21 @@ class IndexView(View):
     def get(self, request):
 
         return render(request, "index.html")
+    
+class LoginView(View):
+
+    def get(self, request):
+
+        return render(request, "login.html")
+    
+class RegisterView(View):
+
+    def get(self, request):
+
+        return render(request, "register.html")
+
+class BrowseView(View):
+
+    def get(self, request):
+
+        return render(request, "browse.html")
