@@ -1,0 +1,28 @@
+{% extends "layouts/layout.html" %}
+{% load static %}
+
+{% block title %} {{ book.title }} {% endblock %}
+
+{% block header %}
+    {% include "layouts/navigation.html" %}
+{% endblock %}
+
+{% block content %}
+    <div class="book-detail max-w-[80rem] w-full mx-auto flex gap-10 py-20">
+        <img src="{% if book.image %}{{ book.image }}{% else %}{% static 'images/No_image_available.svg' %}{% endif %}" alt="{{ book.title }}" class="book-detail__img max-h-[30rem]">
+        <div class="book-detail__content">
+            <h1 class="text-[3.2rem]">{{ book.title }}</h1>
+            <div class="book-detail-rating text-[#E07A5F] mb-6">Rating : {{ book.avg_rating }}</div>
+            <div class="book-detail-authors"><strong class="font-semibold">Authors : </strong>{{ book.author.all|join:", " }}</div>
+            <div class="book-detail-categories"><strong class="font-semibold">Categories : </strong>{{ book.category.all|join:", " }}</div>
+            <div class="book-detail-publish"><strong class="font-semibold">Publish Date : </strong>{{ book.published_date|date:"d F, Y" }}</div>
+            <div class="book-detail-copies mb-6"><strong class="font-semibold">Copies Avaliable : </strong>{{ book.copies_available }}</div>
+            <div class="book-detail-description"><strong class="font-semibold">Detail : </strong><br>{{ book.description }}</div>
+            {% if book.copies_available > 0 %}
+                <a href="#" class="inline-block mt-14 px-10 py-2 bg-[#A9907E] text-white rounded-[3rem] transition-all hover:bg-[#8c7869] shadow-xl">Borrow</a>
+            {% else %}
+                <a href="#" class="inline-block mt-14 px-10 py-2 bg-white border-2 border-[#403d39] text-[#403D39] rounded-[3rem] transition-all hover:bg-gray-200 shadow-xl">Reserve</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

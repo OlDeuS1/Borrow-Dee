@@ -8,21 +8,23 @@
 {% endblock %}
 
 {% block content %}
-    <form action="{% url 'browse' %}" method="get" class="max-w-[50rem] mx-auto">
-        {% include "components/searchComponent.html" %}
+    <form action="{% url 'browse' %}" method="get" class="max-w-[50rem] w-full mx-auto">
+        {% include "components/searchComponent.html" with search_query=search_query %}
     </form>
     <div class="wrapper-popular__books mt-20">
         <h2 class="text-[3.2rem]">Popular Now</h2>
         {% if popular_books %}
             <div class="popular__books grid grid-cols-7 content-between gap-14 mt-12">
                 {% for book in popular_books %}
-                    <div class="popular__book text-center relative">
-                        <img src="{% if book.image %}{{ book.image }}{% else %} {% static 'images/No_image_available.svg' %} {% endif %}" alt="{{ book.title }}">
-                        <div class="popular__book-detail flex flex-col justify-between items-center gap-1 mt-8">
-                            <div class="text-[1.6rem]">{{ book.title }}</div>
-                            <p class="text-[#E07A5F]">Rating : {% if book.avg_rating %} {{ book.avg_rating }} {% else %} 0 {% endif %}</p>
+                    <a href="{% url 'book_detail' book.id %}" class="border-gray-300 border rounded-[1.5rem] hover:scale-[105%] transition-all">
+                        <div class="popular__book text-center">
+                            <img src="{% if book.image %}{{ book.image }}{% else %} {% static 'images/No_image_available.svg' %} {% endif %}" alt="{{ book.title }}">
+                            <div class="popular__book-detail flex flex-col justify-between items-center gap-[.3rem] mt-6 p-2">
+                                <div class="text-[1.6rem]">{{ book.title }}</div>
+                                <p class="text-[#E07A5F] text-[1.4rem]">Rating : {% if book.avg_rating %} {{ book.avg_rating }} {% else %} N/A {% endif %}</p>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 {% endfor %}
             </div>
         {% else %}
@@ -34,13 +36,15 @@
         {% if new_books %}
             <div class="new__books grid grid-cols-7 content-between gap-14 mt-12">
                 {% for book in new_books %}
-                    <div class="new__book text-center">
-                        <img src="{% if book.image %}{{ book.image }}{% else %} {% static 'images/No_image_available.svg' %} {% endif %}" alt="{{ book.title }}">
-                        <div class="new__book-detail flex flex-col justify-between items-center gap-1 mt-8">
-                            <div class="text-[1.6rem]">{{ book.title }}</div>
-                            <p class="text-[#E07A5F]">Rating : {% if book.avg_rating %} {{ book.avg_rating }} {% else %} N/A {% endif %}</p>
+                    <a href="{% url 'book_detail' book.id %}" class="border-gray-300 border rounded-[1.5rem] hover:scale-[105%] transition-all">
+                        <div class="new__book text-center">
+                            <img src="{% if book.image %}{{ book.image }}{% else %} {% static 'images/No_image_available.svg' %} {% endif %}" alt="{{ book.title }}">
+                            <div class="new__book-detail flex flex-col justify-between items-center gap-[.3rem] mt-6 p-2">
+                                <div class="text-[1.6rem]">{{ book.title }}</div>
+                                <p class="text-[#E07A5F] text-[1.4rem]">Rating : {% if book.avg_rating %} {{ book.avg_rating }} {% else %} N/A {% endif %}</p>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 {% endfor %}
             </div>
         {% else %}

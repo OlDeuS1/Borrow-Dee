@@ -100,3 +100,8 @@ class BrowseView(View):
         }
 
         return render(request, "browse.html", context)
+    
+class BookDetailView(View):
+    def get(self, request, book_id):
+        book = Book.objects.annotate(avg_rating=Avg('rating__score', default=0), borrow_count=Count('borrow'), copies_available=F('amount') - F('borrow_count')).get(id=book_id)
+        return render(request, "bookDetail.html", {"book": book})
