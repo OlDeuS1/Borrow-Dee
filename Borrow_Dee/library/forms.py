@@ -32,6 +32,20 @@ class LoginForm(AuthenticationForm):
     username = forms.EmailField(
         label='Email',
         max_length=255,
+        widget=forms.EmailInput(attrs={
+            'class': 'login__form-input bg-white rounded-[1.5rem] w-full p-6 text-[#403D39] text-[1.6rem] border-2 border-[#E07A5F] focus:border-[#ba5e49] focus:outline-none transition-all',
+            'placeholder': 'enter your email here.',
+            'required': True
+        })
+    )
+    
+    password = forms.CharField(
+        label='Password',
+        widget=forms.PasswordInput(attrs={
+            'class': 'login__form-input bg-white rounded-[1.5rem] w-full p-6 text-[#403D39] text-[1.6rem] border-2 border-[#E07A5F] focus:border-[#ba5e49] focus:outline-none transition-all',
+            'placeholder': 'enter your password here.',
+            'required': True
+        })
     )
     
     def clean(self):

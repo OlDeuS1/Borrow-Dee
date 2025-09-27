@@ -21,6 +21,7 @@ class LoginView(View):
         if form.is_valid():
             user = form.get_user() 
             login(request, user)
+            print(f" {user} login successful")
             return redirect("home")
         
         return render(request, "login.html", {"form": form})
@@ -28,7 +29,8 @@ class LoginView(View):
 class Logout(View):
     def get(self, request):
         logout(request)
-        return redirect('index')
+        print("User logged out successfully")
+        return redirect('home')
 
 class RegisterView(View):
 

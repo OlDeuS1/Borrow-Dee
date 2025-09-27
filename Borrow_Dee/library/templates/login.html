@@ -11,20 +11,23 @@
 <body>
     <div class="login bg-[#FAF3E0] h-screen relative">
         <a href="{% url 'home' %}" class="absolute top-10 left-10 hover:underline"><- Back to home</a>
+        {{ form.non_field_errors }}
         <form 
             method="post" 
-            action="" 
+            action="{% url 'login' %}" 
             class="login__form flex flex-col items-center justify-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-[40rem] p-[4rem] w-full bg-[#A9907E] text-white rounded-[3rem] shadow-xl">
             {% csrf_token %}
             
             <h1 class="login__form-title text-6xl font-light text-center mb-24">Sign In</h1>
             <div class="login__form-field relative mb-17 w-full">
-                <label class="login__form-label absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="email">Email</label>
-                <input class="login__form-input bg-white rounded-[1.5rem] w-full p-6 text-[#403D39] text-[1.6rem] border-2 border-[#E07A5F] focus:border-[#ba5e49] focus:outline-none transition-all" type="email" id="email" name="email" placeholder="enter your email here." required>
+                {{ form.username.errors }}
+                <label class="login__form-label absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="{{ form.username.id_for_label }}">Email</label>
+                {{ form.username }}
             </div>
             <div class="login__form-field relative mb-17 w-full">
-                <label class="login__form-label absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="password">Password</label>
-                <input class="login__form-input bg-white rounded-[1.5rem] w-full p-6 text-[#403D39] text-[1.6rem] border-2 border-[#E07A5F] focus:border-[#ba5e49] focus:outline-none transition-all" type="password" id="password" name="password" placeholder="enter your password here." required>
+                {{ form.password.errors }}
+                <label class="login__form-label absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="{{ form.password.id_for_label }}">Password</label>
+                {{ form.password }}
             </div>
 
             <button class="login__form-button cursor-pointer mt-6 px-8 py-3 rounded-[3rem] bg-[#E07A5F] transition-all hover:bg-[#ba5e49] shadow-xl" type="submit">Sign In</button>
