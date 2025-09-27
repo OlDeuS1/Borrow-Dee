@@ -22,6 +22,7 @@ class Book(models.Model):
     amount = models.IntegerField(default=1)
     author = models.ManyToManyField(Author)
     category = models.ManyToManyField(Category)
+    image = models.FileField(upload_to="image/", blank=True, null=True)
 
     def __str__(self):
         return self.title
