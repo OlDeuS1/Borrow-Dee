@@ -13,39 +13,46 @@
         <a href="{% url 'home' %}" class="absolute top-10 left-10 hover:underline"><- Back to home</a>
         <form 
             method="post" 
-            action="" 
+            action="{% url 'register' %}" 
             class="register__form flex flex-col justify-center items-center absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 max-w-[80rem] p-[4rem] w-full bg-[#A9907E] text-white rounded-[3rem] shadow-xl">
             {% csrf_token %}
-            
+            {{ form.non_field_errors }}
+            {{ mem_form.non_field_errors }}
             <h1 class="register__form-title text-6xl font-light text-center mb-24">Register</h1>
             <div class="register__row flex gap-14 w-full mb-17">
                 <div class="register__form-field relative w-full">
-                    <label class="register__form-label absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="username">Username</label>
-                    <input class="register__form-input bg-white rounded-[1.5rem] w-full p-6 text-[#403D39] text-[1.6rem] border-2 border-[#E07A5F] focus:border-[#ba5e49] focus:outline-none transition-all" type="text" id="username" name="username" placeholder="enter your username here." required>
+                    {{ form.username.errors }}
+                    <label class="register__form-label absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="{{ form.username.id_for_label }}">Username</label>
+                    {{ form.username }}
                 </div>
                 <div class="register__form-field relative w-full">
-                    <label class="register__form-label absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="phone">Phone</label>
-                    <input class="register__form-input bg-white rounded-[1.5rem] w-full p-6 text-[#403D39] text-[1.6rem] border-2 border-[#E07A5F] focus:border-[#ba5e49] focus:outline-none transition-all" type="tel" id="phone" name="phone" placeholder="enter your phone number here." required>
-                </div>
-            </div>
-            <div class="register__row flex gap-14 w-full mb-17">
-                <div class="register__form-field relative w-full">
-                    <label class="register__form-label absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="email">Email</label>
-                    <input class="register__form-input bg-white rounded-[1.5rem] w-full p-6 text-[#403D39] text-[1.6rem] border-2 border-[#E07A5F] focus:border-[#ba5e49] focus:outline-none transition-all" type="email" id="email" name="email" placeholder="enter your email here." required>
-                </div>
-                <div class="register__form-field relative w-full">
-                    <label class="register__form-label absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="address">Address</label>
-                    <textarea class="register__form-input bg-white rounded-[1.5rem] w-full p-6 text-[#403D39] text-[1.6rem] border-2 border-[#E07A5F] focus:border-[#ba5e49] focus:outline-none transition-all" id="address" name="address" placeholder="enter your address here." required></textarea>
+                    {{ mem_form.phone_number.errors }}
+                    <label class="register__form-label absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="{{ mem_form.phone_number.id_for_label }}">Phone</label>
+                    {{ mem_form.phone_number }}
                 </div>
             </div>
             <div class="register__row flex gap-14 w-full mb-17">
                 <div class="register__form-field relative w-full">
-                    <label class="register__form-label absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="password">Password</label>
-                    <input class="register__form-input bg-white rounded-[1.5rem] w-full p-6 text-[#403D39] text-[1.6rem] border-2 border-[#E07A5F] focus:border-[#ba5e49] focus:outline-none transition-all" type="password" id="password" name="password" placeholder="enter your password here." required>
+                    {{ form.email.errors }}
+                    <label class="register__form-label absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="{{ form.email.id_for_label }}">Email</label>
+                    {{ form.email }}
                 </div>
                 <div class="register__form-field relative w-full">
-                    <label class="register__form-label absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="confirmPassword">Confirm Password</label>
-                    <input class="register__form-input bg-white rounded-[1.5rem] w-full p-6 text-[#403D39] text-[1.6rem] border-2 border-[#E07A5F] focus:border-[#ba5e49] focus:outline-none transition-all" type="password" id="confirmPassword" name="confirmPassword" placeholder="confirm your password here." required>
+                    {{ mem_form.address.errors }}
+                    <label class="register__form-label absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="{{ mem_form.address.id_for_label }}">Address</label>
+                    {{ mem_form.address }}
+                </div>
+            </div>
+            <div class="register__row flex gap-14 w-full mb-17">
+                <div class="register__form-field relative w-full">
+                    {{ form.password1.errors }}
+                    <label class="register__form-label absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="{{ form.password1.id_for_label }}">Password</label>
+                    {{ form.password1 }}
+                </div>
+                <div class="register__form-field relative w-full">
+                    {{ form.password2.errors }}
+                    <label class="register__form-label absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="{{ form.password2.id_for_label }}">Confirm Password</label>
+                    {{ form.password2 }}
                 </div>
             </div>
             <button class="register__form-button cursor-pointer mt-6 px-8 py-3 rounded-[3rem] bg-[#E07A5F] transition-all hover:bg-[#ba5e49] shadow-xl" type="submit">Register</button>

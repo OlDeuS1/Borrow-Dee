@@ -62,9 +62,35 @@ class LoginForm(AuthenticationForm):
         return super().clean()
     
 class RegisterForm(UserCreationForm):
+    username = forms.CharField(
+        max_length=150,
+        widget=forms.TextInput(attrs={
+            'class': 'register__form-input bg-white rounded-[1.5rem] w-full p-6 text-[#403D39] text-[1.6rem] border-2 border-[#E07A5F] focus:border-[#ba5e49] focus:outline-none transition-all',
+            'placeholder': 'enter your username here.'
+        })
+    )
+    
     email = forms.EmailField(
         max_length=255,
         required=True,
+        widget=forms.EmailInput(attrs={
+            'class': 'register__form-input bg-white rounded-[1.5rem] w-full p-6 text-[#403D39] text-[1.6rem] border-2 border-[#E07A5F] focus:border-[#ba5e49] focus:outline-none transition-all',
+            'placeholder': 'enter your email here.'
+        })
+    )
+    
+    password1 = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class': 'register__form-input bg-white rounded-[1.5rem] w-full p-6 text-[#403D39] text-[1.6rem] border-2 border-[#E07A5F] focus:border-[#ba5e49] focus:outline-none transition-all',
+            'placeholder': 'enter your password here.'
+        })
+    )
+    
+    password2 = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class': 'register__form-input bg-white rounded-[1.5rem] w-full p-6 text-[#403D39] text-[1.6rem] border-2 border-[#E07A5F] focus:border-[#ba5e49] focus:outline-none transition-all',
+            'placeholder': 'confirm your password here.'
+        })
     )
     
     class Meta:
@@ -82,6 +108,14 @@ class MemberForm(ModelForm):
         model = Member
         fields = ['phone_number', 'address']
         widgets = {
-            'phone_number': TextInput(),
-            'address': Textarea(attrs={'rows': 4}),
+            'phone_number': TextInput(attrs={
+                'class': 'register__form-input bg-white rounded-[1.5rem] w-full p-6 text-[#403D39] text-[1.6rem] border-2 border-[#E07A5F] focus:border-[#ba5e49] focus:outline-none transition-all',
+                'placeholder': 'enter your phone number here.',
+                'required': True
+            }),
+            'address': TextInput(attrs={
+                'class': 'register__form-input bg-white rounded-[1.5rem] w-full p-6 text-[#403D39] text-[1.6rem] border-2 border-[#E07A5F] focus:border-[#ba5e49] focus:outline-none transition-all',
+                'placeholder': 'enter your address here.',
+                'required': True
+            }),
         }

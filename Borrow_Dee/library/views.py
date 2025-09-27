@@ -36,20 +36,27 @@ class RegisterView(View):
 
     def get(self, request):
         form = RegisterForm()
-        return render(request, "register.html", {"form": form})
+        mem_form = MemberForm()
+        return render(request, "register.html", {"form": form, "mem_form": mem_form})
 
     def post(self, request):
         form = RegisterForm(data=request.POST)
-        if form.is_valid():
+        mem_form = MemberForm(data=request.POST)
+        if form.is_valid() and mem_form.is_valid():
             user = form.save()
+            mem = mem_form.save(commit=False)
+            mem.username = user.username
+            mem.email = user.email
+            mem.save()
 
             member_group = Group.objects.get(name='Member')
             user.groups.add(member_group)
 
             login(request, user)
+            print(f" {user} registration successful")
             return redirect("home")
         
-        return render(request, "register.html", {"form": form})
+        return render(request, "register.html", {"form": form, "mem_form": mem_form})
 
 class IndexView(View):
     def get(self, request):
