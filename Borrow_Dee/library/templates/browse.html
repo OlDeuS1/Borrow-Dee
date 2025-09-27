@@ -3,8 +3,25 @@
 
 {% block title %} Home {% endblock %}
 
-{% block header %} Welcome to the Library {% endblock %}
+{% block header %}
+    {% include "navigation.html" with active="browse" %}
+{% endblock %}
 
 {% block content %}
-    <p>This is the browse page of the library application.</p>
+    {% include "searchComponent.html" %}
+    {% if books %}
+        <div class="books grid grid-cols-7 content-between gap-14 mt-12">
+            {% for book in books %}
+                <div class="book text-center relative">
+                    <img src="{% if book.image %}{{ book.image }}{% else %} {% static 'images/No_image_available.svg' %} {% endif %}" alt="{{ book.title }}">
+                    <div class="book-detail flex flex-col justify-between items-center gap-1 mt-8">
+                        <div class="text-[1.6rem]">{{ book.title }}</div>
+                        <p class="text-[#E07A5F]">Rating : {% if book.avg_rating %} {{ book.avg_rating }} {% else %} 0 {% endif %}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-gray-500 mt-6 text-center">No books found.</p>
+    {% endif %}
 {% endblock %}

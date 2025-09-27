@@ -9,12 +9,6 @@ from django.db import transaction
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import Group
-
-class IndexView(View):
-
-    def get(self, request):
-
-        return render(request, "index.html")
     
 class LoginView(View):
 
@@ -55,8 +49,16 @@ class RegisterView(View):
         
         return render(request, "register.html", {"form": form})
 
-class BrowseView(View):
-
+class IndexView(View):
     def get(self, request):
+        books = Book.objects.annotate(borrow_count=Count('borrow'), avg_rating=Avg('rating__score'))
+        popular_books = books.order_by('-borrow_count')[:14]
+        new_books = books.order_by('-published_date')[:14]
+        return render(request, "index.html", {"popular_books": popular_books, "new_books": new_books})
 
-        return render(request, "browse.html")
+class BrowseView(View):
+    def get(self, request):
+        search_query = request.GET.get('search', '')
+        print(search_query)
+        books = Book.objects.filter(title__icontains=search_query)
+        return render(request, "browse.html", {"books": books})

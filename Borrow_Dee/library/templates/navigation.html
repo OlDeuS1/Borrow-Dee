@@ -1,6 +1,13 @@
-<nav class="nav">
-    <ul class="nav__list">
-        <li class="nav__item"><a href="{% url 'home' %}">Home</a></li>
-        <li class="nav__item"><a href="{% url 'browse' %}">Browse</a></li>
+<nav class="nav max-w-[120rem] mx-auto flex justify-between items-center py-6">
+    <div class="nav__logo text-light text-[3.2rem] text-white">
+        <a href="{% url 'home' %}">BORROW DEE</a>
+    </div>
+    <ul class="nav__list flex gap-25 text-[1.6rem] text-white">
+        <li class="nav__item"><a href="{% url 'home' %}" class="py-4 hover:border-b hover:border-b-gray-300 {% if active == 'home' %}border-b border-b-gray-300{% endif %}">Home</a></li>
+        <li class="nav__item"><a href="{% url 'browse' %}" class="py-4 hover:border-b hover:border-b-gray-300 {% if active == 'browse' %}border-b border-b-gray-300{% endif %}">Browse</a></li>
     </ul>
+    <div class="nav__user-profile flex gap-8 justify-center items-center">
+        <a href="{% url 'login' %}" class="btn-login px-8 py-3 rounded-[3rem] bg-[#E07A5F] text-white transition-all hover:bg-[#ba5e49] shadow-xl">Sign In</a>
+        <a href="{% url 'register' %}" class="btn-register px-8 py-3 rounded-[3rem] bg-white  text-[#E07A5F] transition-all hover:bg-gray-300 shadow-xl">Register</a>
+    </div>
 </nav>

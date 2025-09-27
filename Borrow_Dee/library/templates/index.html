@@ -3,7 +3,45 @@
 
 {% block title %} Home {% endblock %}
 
+{% block header %}
+    {% include "navigation.html" with active="home" %}
+{% endblock %}
 {% block content %}
-    <p class="text-gray-700">This is the home page of the library application.</p>
-    <a class="text-blue-500 hover:underline" href="{% url 'login' %}">Login</a>
+    {% include "searchComponent.html" %}
+    <div class="wrapper-popular__books mt-20">
+        <h2 class="text-[3.2rem]">Popular Now</h2>
+        {% if popular_books %}
+            <div class="popular__books grid grid-cols-7 content-between gap-14 mt-12">
+                {% for book in popular_books %}
+                    <div class="popular__book text-center relative">
+                        <img src="{% if book.image %}{{ book.image }}{% else %} {% static 'images/No_image_available.svg' %} {% endif %}" alt="{{ book.title }}">
+                        <div class="popular__book-detail flex flex-col justify-between items-center gap-1 mt-8">
+                            <div class="text-[1.6rem]">{{ book.title }}</div>
+                            <p class="text-[#E07A5F]">Rating : {% if book.avg_rating %} {{ book.avg_rating }} {% else %} 0 {% endif %}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-500 mt-6 text-center">No books available at the moment.</p>
+        {% endif %}
+    </div>
+    <div class="wrapper-new__books mt-20">
+        <h2 class="text-[3.2rem]">New Releases</h2>
+        {% if new_books %}
+            <div class="new__books grid grid-cols-7 content-between gap-14 mt-12">
+                {% for book in new_books %}
+                    <div class="new__book text-center">
+                        <img src="{% if book.image %}{{ book.image }}{% else %} {% static 'images/No_image_available.svg' %} {% endif %}" alt="{{ book.title }}">
+                        <div class="new__book-detail flex flex-col justify-between items-center gap-1 mt-8">
+                            <div class="text-[1.6rem]">{{ book.title }}</div>
+                            <p class="text-[#E07A5F]">Rating : {% if book.avg_rating %} {{ book.avg_rating }} {% else %} N/A {% endif %}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-gray-500 mt-6 text-center">No books available at the moment.</p>
+        {% endif %}
+    </div>
 {% endblock %}

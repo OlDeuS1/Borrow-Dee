@@ -1,0 +1,15 @@
+<form action="{% url 'browse' %}" method="get" class="mb-4 max-w-[50rem] mx-auto shadow-xl relative">
+    {% csrf_token %}
+    <input 
+        type="text" 
+        name="search" 
+        id="search" 
+        placeholder="search your book..."
+        value="{{ request.GET.search }}"
+        class="bg-[#403D39] transition-all focus:outline-[#E07A5F] text-white rounded-[3rem] py-3 pl-6 pr-25 w-full">
+    <button type="submit" class="cursor-pointer absolute right-[2px] top-[2px] bg-white rounded-[3rem] px-4 py-2 inline-block hover:bg-gray-300 transition-all">
+        <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="#403D39" viewBox="0 0 256 256">
+            <path d="M229.66,218.34l-50.07-50.06a88.11,88.11,0,1,0-11.31,11.31l50.06,50.07a8,8,0,0,0,11.32-11.32ZM40,112a72,72,0,1,1,72,72A72.08,72.08,0,0,1,40,112Z"></path>
+        </svg>
+    </button>
+</form>

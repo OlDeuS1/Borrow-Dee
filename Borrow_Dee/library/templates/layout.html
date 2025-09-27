@@ -9,14 +9,16 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body class="font-poppins">
-    <header>
-        {% include "navigation.html" %}
+    <header class="bg-[#A9907E]">
+        {% block header %}{% endblock %}
     </header>
     <main>
-        {% block content %}{% endblock %}
+        <div class="content nav max-w-[120rem] mx-auto py-20">
+            {% block content %}{% endblock %}
+        </div>
     </main>
-    <footer>
-        <p>&copy; 2025 My Library</p>
+    <footer class="content nav py-10 bg-[#A9907E]">
+        <p class="text-center text-gray-300 text-light text-[1.4rem]">&copy; 2025 My Library</p>
     </footer>
     {% block script %}<script></script>{% endblock %}
 </body>
