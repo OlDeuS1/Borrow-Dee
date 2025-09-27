@@ -1,13 +1,16 @@
-{% extends "layout.html" %}
+{% extends "layouts/layout.html" %}
 {% load static %}
 
 {% block title %} Home {% endblock %}
 
 {% block header %}
-    {% include "navigation.html" with active="home" %}
+    {% include "layouts/navigation.html" with active="home" %}
 {% endblock %}
+
 {% block content %}
-    {% include "searchComponent.html" %}
+    <form action="{% url 'browse' %}" method="get" class="max-w-[50rem] mx-auto">
+        {% include "components/searchComponent.html" %}
+    </form>
     <div class="wrapper-popular__books mt-20">
         <h2 class="text-[3.2rem]">Popular Now</h2>
         {% if popular_books %}

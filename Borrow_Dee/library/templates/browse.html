@@ -1,27 +1,35 @@
-{% extends "layout.html" %}
+{% extends "layouts/layout.html" %}
 {% load static %}
 
-{% block title %} Home {% endblock %}
+{% block title %} Browse {% endblock %}
 
 {% block header %}
-    {% include "navigation.html" with active="browse" %}
+    {% include "layouts/navigation.html" with active="browse" %}
 {% endblock %}
 
 {% block content %}
-    {% include "searchComponent.html" %}
-    {% if books %}
-        <div class="books grid grid-cols-7 content-between gap-14 mt-12">
-            {% for book in books %}
-                <div class="book text-center relative">
-                    <img src="{% if book.image %}{{ book.image }}{% else %} {% static 'images/No_image_available.svg' %} {% endif %}" alt="{{ book.title }}">
-                    <div class="book-detail flex flex-col justify-between items-center gap-1 mt-8">
-                        <div class="text-[1.6rem]">{{ book.title }}</div>
-                        <p class="text-[#E07A5F]">Rating : {% if book.avg_rating %} {{ book.avg_rating }} {% else %} 0 {% endif %}</p>
-                    </div>
+    <div class="browse flex gap-40 mt-10 relative">
+        <form action="{% url 'browse' %}" method="get" class="max-w-[30rem] w-full sticky top-0 h-fit">
+            {% include "components/searchComponent.html" %}
+            {% include "components/filterComponent.html" with authors=authors categories=categories %}
+        </form>
+        <div class="browse__content w-full">
+            <div class="browse__results text-[2rem]">Results ({{ books.count }} found)</div>
+            {% if books %}
+                <div class="books grid grid-cols-5 content-between gap-14 mt-12">
+                    {% for book in books %}
+                        <div class="book text-center relative">
+                            <img src="{% if book.image %}{{ book.image }}{% else %} {% static 'images/No_image_available.svg' %} {% endif %}" alt="{{ book.title }}">
+                            <div class="book-detail flex flex-col justify-between items-center gap-1 mt-8">
+                                <div class="text-[1.6rem]">{{ book.title }}</div>
+                                <p class="text-[#E07A5F]">Rating : {% if book.avg_rating %} {{ book.avg_rating }} {% else %} N/A {% endif %}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
+            {% else %}
+                <p class="text-gray-500 mt-6 text-center">No books found.</p>
+            {% endif %}
         </div>
-    {% else %}
-        <p class="text-gray-500 mt-6 text-center">No books found.</p>
-    {% endif %}
+    </div>
 {% endblock %}

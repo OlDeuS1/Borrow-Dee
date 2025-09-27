@@ -59,6 +59,44 @@ class IndexView(View):
 class BrowseView(View):
     def get(self, request):
         search_query = request.GET.get('search', '')
-        print(search_query)
-        books = Book.objects.filter(title__icontains=search_query)
-        return render(request, "browse.html", {"books": books})
+        sort = request.GET.get('sort', '')
+        filter_categories = request.GET.getlist('category')
+        filter_authors = request.GET.getlist('author')
+        filter_availability = request.GET.get('available', '')
+
+        books = Book.objects.annotate(borrow_count=Count('borrow'), available_count=F('amount') - F('borrow_count'), avg_rating=Avg('rating__score', default=0))
+        authors = Author.objects.all()
+        categories = Category.objects.all()
+
+        if sort:
+            if sort == 'newest':
+                books = books.order_by('-published_date')
+            elif sort == 'oldest':
+                books = books.order_by('published_date')
+            elif sort == 'rating-up':
+                books = books.order_by('-avg_rating')
+            elif sort == 'rating-down':
+                books = books.order_by('avg_rating')
+
+        if search_query:
+            books = books.filter(title__icontains=search_query)
+        if filter_categories:
+            books = books.filter(category__name__in=filter_categories)
+        if filter_authors:
+            books = books.filter(author__name__in=filter_authors)
+
+        if filter_availability == 'true':
+            books = books.filter(available_count__gt=0)
+
+        context = {
+            "books": books,
+            "authors": authors,
+            "categories": categories,
+            "search_query": search_query,
+            "sort": sort,
+            "filter_categories": filter_categories,
+            "filter_authors": filter_authors,
+            "filter_availability": filter_availability,
+        }
+
+        return render(request, "browse.html", context)

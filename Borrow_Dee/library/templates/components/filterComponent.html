@@ -1,0 +1,53 @@
+<div class="filter-component flex flex-col gap-8 w-full bg-[#403D39] text-white shadow-xl rounded-[3rem] p-6">
+    <div class="sort flex gap-4 items-center bg-[#5D5953] rounded-[3rem] py-3 px-6 w-full">
+        <div class="sort__title w-[30%]">Sort By :</div>
+        <div class="sort__select relative w-[70%]">
+            <select name="sort" id="sort" class="text-[#403D39] focus:outline-none border-2 border-white focus:border-[#E07A5F] bg-white rounded-[3rem] py-2 px-6 w-full cursor-pointer" style="appearance: none;">
+                <option value="newest" {% if sort == "newest" %}selected{% endif %}>newest</option>
+                <option value="oldest" {% if sort == "oldest" %}selected{% endif %}>oldest</option>
+                <option value="rating-up" {% if sort == "rating-up" %}selected{% endif %}>rating &uparrow;</option>
+                <option value="rating-down" {% if sort == "rating-down" %}selected{% endif %}>rating &downarrow;</option>
+            </select>
+            <svg class="down-icon absolute top-1/2 right-3 -translate-y-1/2 pointer-events-none" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#403D39" viewBox="0 0 256 256">
+                <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
+            </svg>
+        </div>
+    </div>
+    <div class="filter flex flex-col gap-4 bg-[#5D5953] rounded-[3rem] p-6 w-full">
+        <div class="filter__header flex items-center justify-between w-full">
+            <div class="filter__title">Filter</div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#fff" viewBox="0 0 256 256">
+                <path d="M200,136a8,8,0,0,1-8,8H64a8,8,0,0,1,0-16H192A8,8,0,0,1,200,136Zm32-56H24a8,8,0,0,0,0,16H232a8,8,0,0,0,0-16Zm-80,96H104a8,8,0,0,0,0,16h48a8,8,0,0,0,0-16Z"></path>
+            </svg>
+        </div>
+        <div class="filter__content">
+            <div class="filter__categories">
+                <div class="filter__categories-title font-semibold mt-2">Categories</div>
+                <ul class="filter__categories-list mt-4 flex flex-col gap-1">
+                    {% for category in categories %}
+                        <li class="filter__categories-item ml-6 flex items-center justify-between">
+                            <label for="category-{{ category.id }}" class="cursor-pointer text-gray-300 hover:text-white transition-all">{{ category.name }}</label>
+                            <input type="checkbox" name="category" id="category-{{ category.id }}" value="{{ category.name }}" class="mr-2 cursor-pointer" {% if category.name in filter_categories %}checked{% endif %}>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="filter__authors">
+                <div class="filter__authors-title font-semibold mt-8">Authors</div>
+                <ul class="filter__authors-list mt-4 flex flex-col gap-1">
+                    {% for author in authors %}
+                        <li class="filter__authors-item ml-6 flex items-center justify-between">
+                            <label for="author-{{ author.id }}" class="cursor-pointer text-gray-300 hover:text-white transition-all">{{ author.name }}</label>
+                            <input type="checkbox" name="author" id="author-{{ author.id }}" value="{{ author.name }}" class="mr-2 cursor-pointer" {% if author.name in filter_authors %}checked{% endif %}>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="available flex justify-between gap-4 items-center bg-[#5D5953] rounded-[3rem] p-6 w-full">
+        <label for="available" class="cursor-pointer text-gray-300 hover:text-white transition-all">Available</label>
+        <input type="checkbox" name="available" id="available" value="true" class="mr-2 cursor-pointer" {% if filter_availability %}checked{% endif %}>
+    </div>
+    <button type="submit" class="cursor-pointer mt-2 px-8 py-3 rounded-[3rem] bg-[#E07A5F] text-white transition-all hover:bg-[#ba5e49] shadow-xl font-semibold">Apply Filters</button>
+</div>
