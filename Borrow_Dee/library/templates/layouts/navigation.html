@@ -7,7 +7,44 @@
         <li class="nav__item"><a href="{% url 'browse' %}" class="py-4 hover:border-b hover:border-b-gray-300 {% if active == 'browse' %}border-b border-b-gray-300{% endif %}">Browse</a></li>
     </ul>
     <div class="nav__user-profile flex gap-8 justify-center items-center">
-        <a href="{% url 'login' %}" class="btn-login px-8 py-3 rounded-[3rem] bg-[#E07A5F] text-white transition-all hover:bg-[#ba5e49] shadow-xl">Sign In</a>
-        <a href="{% url 'register' %}" class="btn-register px-8 py-3 rounded-[3rem] bg-white  text-[#E07A5F] transition-all hover:bg-gray-300 shadow-xl">Register</a>
+        {% if user.is_authenticated %}
+            <div class="user-menu relative cursor-pointer bg-[#E07A5F] transition-all hover:bg-[#ba5e49] px-8 py-4 rounded-[3rem]">
+                <div class="user-name text-white flex justify-center items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#fff" viewBox="0 0 256 256">
+                        <path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"></path>
+                    </svg>
+                    <div class="ml-2 mr-20">{{ user.username }}</div>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="#fff" viewBox="0 0 256 256">
+                        <path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"></path>
+                    </svg>
+                </div>
+                <ul class="user-list overflow-hidden z-4 text-[1.4rem] hidden text-center absolute top-[100%] left-1/2 -translate-x-1/2 w-[80%] bg-[#403D39] text-white rounded-b-[2rem]">
+                    <li><a href="#" class="w-full inline-block p-4 transition-all hover:bg-[#5D5953]">My borrows</a></li>
+                    <li><a href="#" class="w-full inline-block p-4 transition-all hover:bg-[#5D5953]">My Reservations</a></li>
+                    <li><a href="#" class="w-full inline-block p-4 transition-all hover:bg-[#5D5953]">History</a></li>
+                    <li><a href="{% url 'logout' %}" class="w-full inline-block p-4 text-center text-red-500 transition-all hover:bg-[#5D5953]">Logout</a></li>
+                </ul>
+            </div>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn-login px-8 py-3 rounded-[3rem] bg-[#E07A5F] text-white transition-all hover:bg-[#ba5e49] shadow-xl">Sign In</a>
+            <a href="{% url 'register' %}" class="btn-register px-8 py-3 rounded-[3rem] bg-white  text-[#E07A5F] transition-all hover:bg-gray-300 shadow-xl">Register</a>
+        {% endif %}
     </div>
 </nav>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if(document.querySelector('.user-menu')){
+            document.querySelector('.user-menu').addEventListener('click', function(e){
+                document.querySelector('.user-menu').classList.toggle('bg-[#ba5e49]')
+                document.querySelector('.user-list').classList.toggle('hidden')
+            })
+            document.addEventListener('click', (e) => {
+                const curEl = e.target.closest('.user-menu')
+                if(!curEl) {
+                    document.querySelector('.user-menu').classList.remove('bg-[#ba5e49]')
+                    document.querySelector('.user-list').classList.add('hidden')
+                } 
+            })
+        }
+    })
+</script>

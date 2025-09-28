@@ -11,7 +11,6 @@
 <body>
     <div class="login bg-[#FAF3E0] h-screen relative">
         <a href="{% url 'home' %}" class="absolute top-10 left-10 hover:underline"><- Back to home</a>
-        {{ form.non_field_errors }}
         <form 
             method="post" 
             action="{% url 'login' %}" 
@@ -20,16 +19,16 @@
             
             <h1 class="login__form-title text-6xl font-light text-center mb-24">Sign In</h1>
             <div class="login__form-field relative mb-17 w-full">
-                {{ form.username.errors }}
                 <label class="login__form-label absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="{{ form.username.id_for_label }}">Email</label>
                 {{ form.username }}
+                <div class="login__messages text-yellow-300 text-[1.4rem]">{{ form.username.errors }}</div>
             </div>
             <div class="login__form-field relative mb-17 w-full">
-                {{ form.password.errors }}
                 <label class="login__form-label absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="{{ form.password.id_for_label }}">Password</label>
                 {{ form.password }}
+                <div class="login__messages text-yellow-300 text-[1.4rem]">{{ form.password.errors }}</div>
             </div>
-
+            <div class="login__messages text-yellow-300 text-[1.4rem]">{{ form.non_field_errors }}</div>
             <button class="login__form-button cursor-pointer mt-6 px-8 py-3 rounded-[3rem] bg-[#E07A5F] transition-all hover:bg-[#ba5e49] shadow-xl" type="submit">Sign In</button>
             <div class="login__form-suggest font-light text-[1.4rem] mt-6 text-gray-300">
                 Dont have an account ? &nbsp;<a href="{% url 'register' %}" class="text-white hover:underline font-semibold">Register</a>
