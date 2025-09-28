@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Book Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .dashboard-card {
+            background: #424242;
+            border-radius: 20px;
+            filter: drop-shadow(0px 10px 35px rgba(0, 0, 0, 0.25));
+            transition: all .3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .view-more-btn {
+            background: #2C7852;
+            border-radius: 15.5px;
+            transition: all .3s ease;
+        }
+
+        .view-more-btn:hover {
+            background: #246b47;
+            transform: scale(1.05);
+        }
+
+        .divider {
+            border-bottom: 1px solid rgba(255, 255, 255, .14);
+        }
+
+        .sidebar-nav {
+            background: #2D2D2D;
+        }
+
+        .nav-item {
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            transition: all .3s ease;
+            display: block;
+        }
+
+        .nav-item:hover {
+            background: rgba(76, 255, 166, 0.1);
+            color: #4CFFA6;
+        }
+
+        .nav-item.active {
+            background: rgba(76, 255, 166, 0.2);
+            color: #4CFFA6;
+        }
+
+        body {
+            background: #212121;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-available {
+            background: rgba(76, 255, 166, 0.15);
+            color: #4CFFA6;
+        }
+
+        .status-borrowed {
+            background: rgba(255, 76, 76, 0.15);
+            color: #FF6B6B;
+        }
+
+        .table-row:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .action-btn {
+            transition: color .2s ease, transform .2s ease;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.15);
+        }
+
+        .search-input {
+            background: #2d2d2d;
+            border: 1px solid #3a3a3a;
+            border-radius: 14px;
+            padding: 10px 16px;
+            color: white;
+            width: 100%;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #4CFFA6;
+            box-shadow: 0 0 0 2px rgba(76, 255, 166, 0.25);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen text-gray-100 font-sans">
+    {% extends 'layouts/admin_base.html' %}
+    {% block title %}Book Management{% endblock %}
+    {% block sidebar %}
+    {% with active_section='books' %}
+    {% include 'layouts/admin_sidebar.html' %}
+    {% endwith %}
+    {% endblock %}
+    {% block content %}
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-10">
+        <h1 class="text-4xl font-bold text-white">Book Management</h1>
+        <div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+            <div class="relative flex-1 min-w-[260px]">
+                <input type="text" placeholder="Search books..." class="search-input pr-12" />
+                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+            </div>
+            <button class="view-more-btn px-8 py-3 text-white font-medium flex items-center justify-center gap-2">
+                <span class="text-lg leading-none">＋</span> Add Book
+            </button>
+        </div>
+    </div>
+    <div class="dashboard-card p-8">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 divider pb-4">
+            <h2 class="text-2xl font-semibold text-white">Books List</h2>
+            <div class="flex gap-2 text-sm text-gray-400">
+                <span><strong class="text-white">2</strong> total</span>
+                <span class="hidden sm:inline">•</span>
+                <span><strong class="text-[#4CFFA6]">1</strong> available</span>
+                <span class="hidden sm:inline">•</span>
+                <span><strong class="text-[#FF6B6B]">1</strong> borrowed</span>
+            </div>
+        </div>
+        <div class="overflow-x-auto -mx-4 md:mx-0">
+            <table class="min-w-full text-sm text-left">
+                <thead class="text-gray-400 uppercase text-xs tracking-wider">
+                    <tr class="border-b border-gray-600/40">
+                        <th class="py-3 px-4 font-medium">ID</th>
+                        <th class="py-3 px-4 font-medium">Title</th>
+                        <th class="py-3 px-4 font-medium">Authors</th>
+                        <th class="py-3 px-4 font-medium">Categories</th>
+                        <th class="py-3 px-4 font-medium">ISBN</th>
+                        <th class="py-3 px-4 font-medium">Total Copies</th>
+                        <th class="py-3 px-4 font-medium">Status</th>
+                        <th class="py-3 px-4 font-medium text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="text-gray-200">
+                    <tr class="table-row border-b border-gray-700/40 last:border-none">
+                        <td class="px-4 py-3 align-top">1</td>
+                        <td class="px-4 py-3 font-semibold align-top">ORCHID THE REST</td>
+                        <td class="px-4 py-3 align-top space-y-1">
+                            <div>Susan chery</div>
+                            <div>Thanaphat Mallikeaw</div>
+                        </td>
+                        <td class="px-4 py-3 align-top space-y-1">
+                            <span class="status-badge status-available">Fantasy</span>
+                            <span class="status-badge status-available">Romance</span>
+                        </td>
+                        <td class="px-4 py-3 align-top">641249213181</td>
+                        <td class="px-4 py-3 align-top">3</td>
+                        <td class="px-4 py-3 align-top"><span class="status-badge status-available">Available</span>
+                        </td>
+                        <td class="px-4 py-3 align-top text-right whitespace-nowrap">
+                            <button class="action-btn text-yellow-400 hover:text-yellow-300 mr-3" title="Edit">✏️
+                            </button>
+                            <button class="action-btn text-red-500 hover:text-red-400" title="Delete">🗑️
+                            </button>
+                        </td>
+                    </tr>
+                    <tr class="table-row border-b border-gray-700/40 last:border-none">
+                        <td class="px-4 py-3 align-top">2</td>
+                        <td class="px-4 py-3 font-semibold align-top">ORCHID THE REST</td>
+                        <td class="px-4 py-3 align-top space-y-1">
+                            <div>Susan chery</div>
+                            <div>Thanaphat Mallikeaw</div>
+                        </td>
+                        <td class="px-4 py-3 align-top space-y-1">
+                            <span class="status-badge status-available">Fantasy</span>
+                            <span class="status-badge status-available">Romance</span>
+                        </td>
+                        <td class="px-4 py-3 align-top">555524242424</td>
+                        <td class="px-4 py-3 align-top">5</td>
+                        <td class="px-4 py-3 align-top"><span class="status-badge status-borrowed">All Borrowed</span>
+                        </td>
+                        <td class="px-4 py-3 align-top text-right whitespace-nowrap">
+                            <button class="action-btn text-yellow-400 hover:text-yellow-300 mr-3" title="Edit">✏️
+                            </button>
+                            <button class="action-btn text-red-500 hover:text-red-400" title="Delete">🗑️
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endblock %}
+</body>
+
+</html>

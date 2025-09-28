@@ -1,3 +1,4 @@
+from multiprocessing import context
 from django.shortcuts import render, redirect
 from django.views import View
 from .models import *
@@ -114,3 +115,15 @@ class BookDetailView(View):
     def get(self, request, book_id):
         book = Book.objects.annotate(avg_rating=Avg('rating__score', default=0), borrow_count=Count('borrow'), copies_available=F('amount') - F('borrow_count')).get(id=book_id)
         return render(request, "bookDetail.html", {"book": book})
+    
+class DashboardView(View):
+
+    def get(self, request):
+
+        return render(request, "dashboard.html")
+    
+class BookManagementView(View):
+
+    def get(self, request):
+        
+        return render(request, "book_management.html")

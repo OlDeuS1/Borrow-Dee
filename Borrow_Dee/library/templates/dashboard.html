@@ -1,0 +1,84 @@
+{% extends 'layouts/admin_base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<h1 class="text-4xl font-bold mb-12 text-white">Admin Dashboard</h1>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+  <div class="dashboard-card p-8 col-span-1 md:col-span-2 lg:col-span-1">
+    <div class="text-6xl font-bold text-white mb-4">1000</div>
+    <div class="text-lg text-gray-300 mb-6 divider pb-4">Total User</div>
+    <button class="view-more-btn px-6 py-3 text-white font-medium text-sm">View More</button>
+  </div>
+  <div class="dashboard-card p-8">
+    <div class="text-6xl font-bold text-white mb-4">128</div>
+    <div class="text-lg text-gray-300 mb-6 divider pb-4">Total Book</div>
+    <button class="view-more-btn px-6 py-3 text-white font-medium text-sm">View More</button>
+  </div>
+  <div class="dashboard-card p-8">
+    <div class="text-6xl font-bold text-white mb-4">15</div>
+    <div class="text-lg text-gray-300 mb-6 divider pb-4">Total Category</div>
+    <button class="view-more-btn px-6 py-3 text-white font-medium text-sm">View More</button>
+  </div>
+  <div class="dashboard-card p-8">
+    <div class="text-6xl font-bold text-white mb-4">34</div>
+    <div class="text-lg text-gray-300 mb-6 divider pb-4">Total Loan</div>
+    <button class="view-more-btn px-6 py-3 text-white font-medium text-sm">View More</button>
+  </div>
+  <div class="dashboard-card p-8">
+    <div class="text-6xl font-bold text-white mb-4">7</div>
+    <div class="text-lg text-gray-300 mb-6 divider pb-4">Total Reservation</div>
+    <button class="view-more-btn px-6 py-3 text-white font-medium text-sm">View More</button>
+  </div>
+</div>
+<div class="mt-16">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div class="dashboard-card p-8">
+      <h3 class="text-2xl font-bold text-white mb-6">Quick Actions</h3>
+      <div class="space-y-4">
+        <button class="w-full text-left p-4 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors">
+          <div class="font-semibold text-white">Add New Book</div>
+          <div class="text-sm text-gray-400">Add books to the library collection</div>
+        </button>
+        <button class="w-full text-left p-4 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors">
+          <div class="font-semibold text-white">Manage Loans</div>
+          <div class="text-sm text-gray-400">Process book loans and returns</div>
+        </button>
+        <button class="w-full text-left p-4 rounded-lg bg-gray-700 hover:bg-gray-600 transition-colors">
+          <div class="font-semibold text-white">User Registration</div>
+          <div class="text-sm text-gray-400">Register new library members</div>
+        </button>
+      </div>
+    </div>
+    <div class="dashboard-card p-8">
+      <h3 class="text-2xl font-bold text-white mb-6">Recent Activity</h3>
+      <div class="space-y-4">
+        <div class="flex items-center gap-4 p-4 bg-gray-700 rounded-lg">
+          <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+          <div class="flex-1">
+            <div class="font-semibold text-white">New book added</div>
+            <div class="text-sm text-gray-400">5 minutes ago</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 p-4 bg-gray-700 rounded-lg">
+          <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
+          <div class="flex-1">
+            <div class="font-semibold text-white">Book returned</div>
+            <div class="text-sm text-gray-400">12 minutes ago</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 p-4 bg-gray-700 rounded-lg">
+          <div class="w-2 h-2 bg-yellow-400 rounded-full"></div>
+          <div class="flex-1">
+            <div class="font-semibold text-white">New user registered</div>
+            <div class="text-sm text-gray-400">1 hour ago</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block sidebar %}
+  {% with active_section='dashboard' %}
+    {% include 'layouts/admin_sidebar.html' %}
+  {% endwith %}
+{% endblock %}
