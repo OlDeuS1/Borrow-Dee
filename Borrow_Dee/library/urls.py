@@ -11,4 +11,6 @@ urlpatterns = [
     path("books/<int:book_id>/", views.BookDetailView.as_view(), name="book_detail"),
     path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
     path("dashboard/books/", views.BookManagementView.as_view(), name="book_management"),
+    path("dashboard/categories/", views.CategoryManagementView.as_view(), name="category_management"),
+    path("dashboard/loans/", views.LoanManagementView.as_view(), name="loan_management"),
 ]

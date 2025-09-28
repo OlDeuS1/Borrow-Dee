@@ -127,3 +127,15 @@ class BookManagementView(View):
     def get(self, request):
         
         return render(request, "book_management.html")
+    
+class CategoryManagementView(View):
+
+    def get(self, request):
+
+        return render(request, "category_management.html")
+    
+class LoanManagementView(View):
+
+    def get(self, request):
+
+        return render(request, "loan_management.html")

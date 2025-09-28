@@ -1,0 +1,98 @@
+{% extends 'layouts/admin_base.html' %}
+{% block title %}Category Management{% endblock %}
+{% block sidebar %}
+	{% with active_section='categories' %}
+		{% include 'layouts/admin_sidebar.html' %}
+	{% endwith %}
+{% endblock %}
+{% block header %}
+<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-10">
+	<h1 class="text-4xl font-bold text-white">Category Management</h1>
+	<div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+		<div class="relative flex-1 min-w-[260px]">
+			<input type="text" placeholder="Search categories..." class="search-input pr-12" />
+			<span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+		</div>
+		<button class="view-more-btn px-8 py-3 text-white font-medium flex items-center justify-center gap-2">
+			<span class="text-lg leading-none">＋</span> Add Category
+		</button>
+	</div>
+</div>
+{% endblock %}
+{% block content %}
+<div class="dashboard-card p-8">
+	<div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 divider pb-4">
+		<h2 class="text-2xl font-semibold text-white">Categories List</h2>
+		<div class="flex gap-2 text-sm text-gray-400">
+			<span><strong class="text-white">5</strong> total</span>
+			<span class="hidden sm:inline">•</span>
+			<span><strong class="text-[#4CFFA6]">5</strong> active</span>
+		</div>
+	</div>
+	<div class="overflow-x-auto -mx-4 md:mx-0">
+		<table class="min-w-full text-sm text-left">
+			<thead class="text-gray-400 uppercase text-xs tracking-wider">
+				<tr class="border-b border-gray-600/40">
+					<th class="py-3 px-4 font-medium">ID</th>
+					<th class="py-3 px-4 font-medium">Name</th>
+					<th class="py-3 px-4 font-medium">Description</th>
+					<th class="py-3 px-4 font-medium">Books Count</th>
+					<th class="py-3 px-4 font-medium text-right">Actions</th>
+				</tr>
+			</thead>
+			<tbody class="text-gray-200">
+				<tr class="table-row border-b border-gray-700/40 last:border-none">
+					<td class="px-4 py-3 align-top">1</td>
+					<td class="px-4 py-3 font-semibold align-top">Fantasy</td>
+					<td class="px-4 py-3 align-top max-w-[260px]">Stories set in imaginary worlds with magic and mythical beings.</td>
+					<td class="px-4 py-3 align-top">34</td>
+					<td class="px-4 py-3 align-top text-right whitespace-nowrap">
+						<button class="action-btn text-yellow-400 hover:text-yellow-300 mr-3" title="Edit">✏️</button>
+						<button class="action-btn text-red-500 hover:text-red-400" title="Delete">🗑️</button>
+					</td>
+				</tr>
+				<tr class="table-row border-b border-gray-700/40 last:border-none">
+					<td class="px-4 py-3 align-top">2</td>
+					<td class="px-4 py-3 font-semibold align-top">Romance</td>
+					<td class="px-4 py-3 align-top max-w-[260px]">Emotionally driven narratives focused on relationships.</td>
+					<td class="px-4 py-3 align-top">28</td>
+					<td class="px-4 py-3 align-top text-right whitespace-nowrap">
+						<button class="action-btn text-yellow-400 hover:text-yellow-300 mr-3" title="Edit">✏️</button>
+						<button class="action-btn text-red-500 hover:text-red-400" title="Delete">🗑️</button>
+					</td>
+				</tr>
+				<tr class="table-row border-b border-gray-700/40 last:border-none">
+					<td class="px-4 py-3 align-top">3</td>
+					<td class="px-4 py-3 font-semibold align-top">Science Fiction</td>
+					<td class="px-4 py-3 align-top max-w-[260px]">Speculative stories exploring futuristic science and technology.</td>
+					<td class="px-4 py-3 align-top">19</td>
+					<td class="px-4 py-3 align-top text-right whitespace-nowrap">
+						<button class="action-btn text-yellow-400 hover:text-yellow-300 mr-3" title="Edit">✏️</button>
+						<button class="action-btn text-red-500 hover:text-red-400" title="Delete">🗑️</button>
+					</td>
+				</tr>
+				<tr class="table-row border-b border-gray-700/40 last:border-none">
+					<td class="px-4 py-3 align-top">4</td>
+					<td class="px-4 py-3 font-semibold align-top">Mystery</td>
+					<td class="px-4 py-3 align-top max-w-[260px]">Plots centered on solving crimes or uncovering secrets.</td>
+					<td class="px-4 py-3 align-top">22</td>
+					<td class="px-4 py-3 align-top text-right whitespace-nowrap">
+						<button class="action-btn text-yellow-400 hover:text-yellow-300 mr-3" title="Edit">✏️</button>
+						<button class="action-btn text-red-500 hover:text-red-400" title="Delete">🗑️</button>
+					</td>
+				</tr>
+				<tr class="table-row border-b border-gray-700/40 last:border-none">
+					<td class="px-4 py-3 align-top">5</td>
+					<td class="px-4 py-3 font-semibold align-top">Non-Fiction</td>
+					<td class="px-4 py-3 align-top max-w-[260px]">Informative works based on facts, real events, and real people.</td>
+					<td class="px-4 py-3 align-top">41</td>
+					<td class="px-4 py-3 align-top text-right whitespace-nowrap">
+						<button class="action-btn text-yellow-400 hover:text-yellow-300 mr-3" title="Edit">✏️</button>
+						<button class="action-btn text-red-500 hover:text-red-400" title="Delete">🗑️</button>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+{% endblock %}

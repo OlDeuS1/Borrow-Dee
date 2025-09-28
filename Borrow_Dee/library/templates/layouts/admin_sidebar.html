@@ -13,25 +13,25 @@ Reusable admin sidebar. Pass 'active_section' in context: one of
       </div>
   </div>
   <nav class="space-y-3">
-      <a href="#" class="nav-item {% if active_section == 'dashboard' %}active{% endif %}">
+      <a href="{% url 'dashboard' %}" class="nav-item {% if active_section == 'dashboard' %}active{% endif %}">
           <div class="flex items-center gap-3">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
               Dashboard
           </div>
       </a>
-      <a href="#" class="nav-item {% if active_section == 'books' %}active{% endif %}">
+      <a href="{% url 'book_management' %}" class="nav-item {% if active_section == 'books' %}active{% endif %}">
           <div class="flex items-center gap-3">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>
               Book Management
           </div>
       </a>
-      <a href="#" class="nav-item {% if active_section == 'categories' %}active{% endif %}">
+      <a href="{% url 'category_management' %}" class="nav-item {% if active_section == 'categories' %}active{% endif %}">
           <div class="flex items-center gap-3">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4H4c-1.11 0-2 .89-2 2v3c0 1.11.89 2 2 2h6c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm10 0h-6c-1.11 0-2 .89-2 2v3c0 1.11.89 2 2 2h6c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zM10 13H4c-1.11 0-2 .89-2 2v3c0 1.11.89 2 2 2h6c1.11 0 2-.89 2-2v-3c0-1.11-.89-2-2-2zm10 0h-6c-1.11 0-2 .89-2 2v3c0 1.11.89 2 2 2h6c1.11 0 2-.89 2-2v-3c0-1.11-.89-2-2-2z"/></svg>
               Category Management
           </div>
       </a>
-      <a href="#" class="nav-item {% if active_section == 'loans' %}active{% endif %}">
+      <a href="{% url 'loan_management' %}" class="nav-item {% if active_section == 'loans' %}active{% endif %}">
           <div class="flex items-center gap-3">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9 11H7v6h2v-6zm4 0h-2v6h2v-6zm4 0h-2v6h2v-6zm2.5-9H18V0h-2v2H8V0H6v2H4.5C3.12 2 2 3.12 2 4.5v15C2 20.88 3.12 22 4.5 22h15c1.38 0 2.5-1.12 2.5-2.5v-15C22 3.12 20.88 2 19.5 2z"/></svg>
               Loan Management
