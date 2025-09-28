@@ -149,5 +149,11 @@ class ReservationManagementView(View):
 class UserManagementView(View):
 
     def get(self, request):
-        # TODO: implement filtering, searching, pagination, and KPI metrics.
+
         return render(request, "user_management.html")
+    
+class UserHistoryView(View):
+
+    def get(self, request):
+
+        return render(request, "user_history.html")

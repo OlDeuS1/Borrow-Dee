@@ -15,4 +15,5 @@ urlpatterns = [
     path("dashboard/loans/", views.LoanManagementView.as_view(), name="loan_management"),
     path("dashboard/reservations/", views.ReservationManagementView.as_view(), name="reservation_management"),
     path("dashboard/users/", views.UserManagementView.as_view(), name="user_management"),
+    path("dashboard/users/history/", views.UserHistoryView.as_view(), name="user_history"),
 ]
