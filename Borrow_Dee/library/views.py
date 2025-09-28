@@ -139,3 +139,15 @@ class LoanManagementView(View):
     def get(self, request):
 
         return render(request, "loan_management.html")
+    
+class ReservationManagementView(View):
+
+    def get(self, request):
+
+        return render(request, "reservation_management.html")
+
+class UserManagementView(View):
+
+    def get(self, request):
+        # TODO: implement filtering, searching, pagination, and KPI metrics.
+        return render(request, "user_management.html")

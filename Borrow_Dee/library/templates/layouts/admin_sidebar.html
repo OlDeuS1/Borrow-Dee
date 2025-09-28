@@ -37,13 +37,13 @@ Reusable admin sidebar. Pass 'active_section' in context: one of
               Loan Management
           </div>
       </a>
-      <a href="#" class="nav-item {% if active_section == 'reservations' %}active{% endif %}">
+      <a href="{% url 'reservation_management' %}" class="nav-item {% if active_section == 'reservations' %}active{% endif %}">
           <div class="flex items-center gap-3">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
               Reservation Management
           </div>
       </a>
-      <a href="#" class="nav-item {% if active_section == 'users' %}active{% endif %}">
+      <a href="{% url 'user_management' %}" class="nav-item {% if active_section == 'users' %}active{% endif %}">
           <div class="flex items-center gap-3">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zm4 18v-6h2.5l-2.54-7.63A3.01 3.01 0 0 0 16.98 6c-.8 0-1.54.37-2.01.97L11.1 10.9c-.64.64-.64 1.67 0 2.31l3.9 3.9-1 4.79 2 0zm-7.5-10.5c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5S11 9.17 11 10s.67 1.5 1.5 1.5zM5.5 6c1.11 0 2-.89 2-2s-.89-2-2-2-2 .89-2 2 .89 2 2 2zm2.5 16v-6H5.5l2.54-7.63A3.01 3.01 0 0 1 11.02 6c.8 0 1.54.37 2.01.97L16.9 10.9c.64.64.64 1.67 0 2.31l-3.9 3.9 1 4.79h-2z"/></svg>
               User Management
