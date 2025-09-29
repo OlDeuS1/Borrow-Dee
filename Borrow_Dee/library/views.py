@@ -311,7 +311,15 @@ class UserHistoryView(View):
     def get(self, request):
 
         return render(request, "user_history.html")
-
+    
+# admin api
+class BookDelete(APIView):
+    
+    def get(self, request, book_id, format=None):
+        book = get_object_or_404(Book, id=book_id)
+        book.delete()
+        return redirect('book_management')
+    
 # TomSelect Autocomplete Views
 class AuthorAutocompleteView(AutocompleteModelView):
     model = Author
