@@ -32,12 +32,14 @@
                 </td>
                 <td class="my-borrows__data py-8">
                   Status
-                  <div class="text-gray-500 text-[1.4rem]">{{ borrow.status }}</div>
+                  <div class="text-gray-500 text-[1.4rem] {% if borrow.status == 'overdue' %}text-red-500{% endif%}">{{ borrow.status }}</div>
                 </td>
                 <td class="my-borrows__data py-8 text-center">
-                  <button class="btn-renew inline-block cursor-pointer text-white px-8 py-3 rounded-[3rem] bg-[#E07A5F] transition-all hover:bg-[#ba5e49] shadow-xl">
-                    Renew
-                  </button>
+                  {% if borrow.status != 'borrowed' %}
+                    <button disabled class="btn-dis-renew inline-block text-white px-8 py-3 rounded-[3rem] bg-gray-500 transition-all shadow-xl">Renew</button>
+                  {% else %}
+                    <button class="btn-renew inline-block cursor-pointer text-white px-8 py-3 rounded-[3rem] bg-[#E07A5F] transition-all hover:bg-[#ba5e49] shadow-xl">Renew</button>
+                  {% endif %}
                 </td>
               </tr>
             {% endfor %}

@@ -79,7 +79,7 @@ class Reservation(models.Model):
         COMPLETED = 'completed', 'Completed'
         
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    member = models.ForeignKey(Member, on_delete=models.CASCADE)
+    member = models.ForeignKey(Member, null=True, on_delete=models.CASCADE)
     reservation_date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=choices.choices, default=choices.WAITING)
     queue_order = models.IntegerField(blank=True, null=True) # ลำดับคิวการจองของหนังสือแต่ละเล่ม

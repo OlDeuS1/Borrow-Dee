@@ -1,0 +1,61 @@
+{% extends "layouts/layout.html" %}
+{% load static %}
+
+{% block title %} My Reservations {% endblock %}
+
+{% block header %}
+    {% include "layouts/navigation.html" %}
+{% endblock %}
+
+{% block content %}
+    <div class="my-reservations">
+      <h1 class="my-reservations__title text-[4.2rem] mb-25">My Reservations</h1>
+      <div class="my-reservations__content">
+        {% if reservations.count > 0 %}
+          <table class="my-reservations__table border-collapse w-full">
+            {% for reserve in reservations %}
+              <tr class="my-reservations__row border-t border-gray-300 text-[1.6rem]">
+                <td class="my-reservations__data py-8 align-middle">
+                  <img class="w-[15rem]" src="{% if reserve.book.image %}{{ reserve.book.image }}{% else %}{% static 'images/No_image_available.svg' %}{% endif %}" alt="{{ reserve.book.title }}">
+                </td>
+                <td class="my-reservations__data py-8">
+                  {{ reserve.book.title }}
+                  <div class="text-gray-500 text-[1.4rem]">{{ reserve.book.author.all|join:", " }}</div>
+                </td>
+                <td class="my-reservations__data py-8">
+                  Your Queue Position
+                  <div class="text-gray-500 text-[1.4rem]">
+                    {% if reserve.queue_order == 1 and reserve.status == 'waiting' %}
+                      It's your turn.
+                    {% else %} 
+                    #{{ reserve.queue_order }}
+                    {% endif %}
+                  </div>
+                </td>
+                <td class="my-reservations__data py-8">
+                  Reserved Date
+                  <div class="text-gray-500 text-[1.4rem]">{{ reserve.reservation_date|date:"d F, Y" }}</div>
+                </td>
+                <td class="my-reservations__data py-8">
+                  Status
+                  <div class="text-gray-500 text-[1.4rem]">{{ reserve.status }}</div>
+                </td>
+                <td class="my-reservations__data py-8 text-center">
+                  {% if reserve.queue_order == 1 and reserve.status == 'waiting' %}
+                      <button class="btn-borrow-now inline-block cursor-pointer text-white px-8 py-3 rounded-[3rem] bg-[#E07A5F] transition-all hover:bg-[#ba5e49] shadow-xl">
+                        Borrow Now
+                      </button>
+                    {% else %} 
+                    #{{ reserve.queue_order }}
+                    {% endif %}
+                  
+                </td>
+              </tr>
+            {% endfor %}
+          </table>
+        {% else %}
+          <div class="text-center p-8 text-gray-400">No reservations yet.</div>
+        {% endif %}
+      </div>
+    </div>
+{% endblock %}
