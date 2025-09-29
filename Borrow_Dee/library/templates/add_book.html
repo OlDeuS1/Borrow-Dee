@@ -1,0 +1,99 @@
+{% extends 'layouts/admin_base.html' %}
+{% block title %}Add Book{% endblock %}
+{% block sidebar %}
+    {% with active_section='books' %}
+        {% include 'layouts/admin_sidebar.html' %}
+    {% endwith %}
+{% endblock %}
+{% block header %}
+<div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-10">
+    <div class="flex items-center gap-4">
+        <a href="{% url 'book_management' %}" class="text-gray-400 hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+        </a>
+        <h1 class="text-4xl font-bold text-white">Add New Book</h1>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+{{ form.media }}
+<div class="dashboard-card p-8 max-w-4xl mx-auto">
+    <form id="addBookForm" method="post" action="{% url 'add_book' %}" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+        
+        <!-- Book Title -->
+        <div>
+            <label class="block text-sm font-medium text-white/75 mb-2" for="{{ form.title.id_for_label }}">Book Title *</label>
+            {{ form.title }}
+            <div class="text-yellow-300 text-[1.4rem]">{{ form.title.errors }}</div>
+        </div>
+        
+        <!-- Authors -->
+        <div>
+            <label class="block text-sm font-medium text-white/75 mb-2" for="{{ form.author.id_for_label }}">Authors *</label>
+            {{ form.author }}
+            <div class="text-yellow-300 text-[1.4rem]">{{ form.author.errors }}</div>
+        </div>
+        
+        <!-- Categories -->
+        <div>
+            <div class="flex items-center justify-between mb-2">
+                <label class="block text-sm font-medium text-white/75" for="{{ form.category.id_for_label }}">Categories</label>
+                <button type="button" id="createCategoryBtn" class="text-[#2C7852] hover:text-[#4CFFA6] text-sm font-medium flex items-center gap-1 transition-colors">
+                    <span class="text-xs">＋</span> Create Categories
+                </button>
+            </div>
+            {{ form.category }}
+            <div class="text-yellow-300 text-[1.4rem]">{{ form.category.errors }}</div>
+        </div>
+        
+        <!-- ISBN and Copies Row -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-white/75 mb-2" for="{{ form.isbn_number.id_for_label }}">ISBN *</label>
+                {{ form.isbn_number }}
+                <div class="text-yellow-300 text-[1.4rem]">{{ form.isbn_number.errors }}</div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-white/75 mb-2" for="{{ form.amount.id_for_label }}">Total Copies *</label>
+                {{ form.amount }}
+                <div class="text-yellow-300 text-[1.4rem]">{{ form.amount.errors }}</div>
+            </div>
+        </div>
+        
+        <!-- Description -->
+        <div>
+            <label class="block text-sm font-medium text-white/75 mb-2" for="{{ form.description.id_for_label }}">Description</label>
+            {{ form.description }}
+            <div class="text-yellow-300 text-[1.4rem]">{{ form.description.errors }}</div>
+        </div>
+        
+        <!-- Publication Date and Image -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-white/75 mb-2" for="{{ form.published_date.id_for_label }}">Publication Date</label>
+                {{ form.published_date }}
+                <div class="text-yellow-300 text-[1.4rem]">{{ form.published_date.errors }}</div>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-white/75 mb-2" for="{{ form.image.id_for_label }}">Book Image</label>
+                {{ form.image }}
+                <div class="text-yellow-300 text-[1.4rem]">{{ form.image.errors }}</div>
+            </div>
+        </div>
+        
+        <!-- Form Actions -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-6 border-t border-gray-600/40">
+            <a href="{% url 'book_management' %}" class="px-6 py-3 text-gray-300 hover:text-white transition-colors rounded-[15px] border border-gray-600/40 font-medium text-center">
+                Cancel
+            </a>
+            <button type="submit" class="bg-[#2C7852] hover:bg-[#246b47] px-8 py-3 text-white font-medium rounded-[15px] transition-all transform hover:scale-105 shadow-lg">
+                Save Book
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}

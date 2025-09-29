@@ -12,6 +12,8 @@ urlpatterns = [
     path("myborrows/", views.MyBorrowsView.as_view(), name="myborrows"),
     path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
     path("dashboard/books/", views.BookManagementView.as_view(), name="book_management"),
+    path("dashboard/books/add/", views.AddBookView.as_view(), name="add_book"),
+    path("dashboard/books/edit/<int:book_id>/", views.EditBookView.as_view(), name="edit_book"),
     path("dashboard/categories/", views.CategoryManagementView.as_view(), name="category_management"),
     path("dashboard/loans/", views.LoanManagementView.as_view(), name="loan_management"),
     path("dashboard/reservations/", views.ReservationManagementView.as_view(), name="reservation_management"),
@@ -24,7 +26,7 @@ urlpatterns = [
     path('api/books/', views.BookList.as_view(), name="book-list"),
     path('api/borrows/', views.BorrowList.as_view(), name="borrow-list"),
     path('api/borrows/<int:borrow_id>/', views.BorrowDetail.as_view(), name="borrow-detail"),
-    
+
     # TomSelect autocomplete URLs
     path("author-autocomplete/", views.AuthorAutocompleteView.as_view(), name="author-autocomplete"),
     path("category-autocomplete/", views.CategoryAutocompleteView.as_view(), name="category-autocomplete"),

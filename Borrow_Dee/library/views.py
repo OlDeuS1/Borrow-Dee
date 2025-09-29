@@ -212,8 +212,21 @@ class DashboardView(View):
 class BookManagementView(View):
 
     def get(self, request):
+        books = Book.objects.all()
+        return render(request, "book_management.html", {"books": books})
+
+class AddBookView(View):
+    
+    def get(self, request):
         form = BookForm()
-        return render(request, "book_management.html", {"form": form})
+        return render(request, "add_book.html", {"form": form})
+    
+class EditBookView(View):
+    
+    def get(self, request, book_id):
+        book = get_object_or_404(Book, id=book_id)
+        form = BookForm(instance=book)
+        return render(request, "edit_book.html", {"form": form, "book": book})
 
 class CategoryManagementView(View):
 
