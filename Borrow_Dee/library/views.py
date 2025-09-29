@@ -311,11 +311,10 @@ class UserHistoryView(View):
     def get(self, request):
 
         return render(request, "user_history.html")
+
+class BookDelete(View):
     
-# admin api
-class BookDelete(APIView):
-    
-    def get(self, request, book_id, format=None):
+    def get(self, request, book_id):
         book = get_object_or_404(Book, id=book_id)
         book.delete()
         return redirect('book_management')
