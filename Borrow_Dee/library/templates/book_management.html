@@ -133,36 +133,33 @@
                 <!-- ISBN and Copies Row -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-white/75 mb-2">ISBN *</label>
-                        <input type="text" id="bookIsbn" name="isbn" required 
-                               class="w-full bg-[#424242] border border-gray-600/40 rounded-[15px] px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#2C7852] focus:ring-2 focus:ring-[#2C7852]/20 transition-all">
+                        <label class="block text-sm font-medium text-white/75 mb-2" for="{{ form.isbn_number.id_for_label }}">ISBN *</label>
+                        {{ form.isbn_number }}
+                        <div class="text-yellow-300 text-[1.4rem]">{{ form.isbn_number.errors }}</div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-white/75 mb-2">Total Copies *</label>
-                        <input type="number" id="bookCopies" name="copies" required min="1" value="1"
-                               class="w-full bg-[#424242] border border-gray-600/40 rounded-[15px] px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#2C7852] focus:ring-2 focus:ring-[#2C7852]/20 transition-all">
+                        <label class="block text-sm font-medium text-white/75 mb-2" for="{{ form.amount.id_for_label }}">Total Copies *</label>
+                        {{ form.amount }}
+                        <div class="text-yellow-300 text-[1.4rem]">{{ form.amount.errors }}</div>
                     </div>
                 </div>
                 
-                <!-- Description -->
                 <div>
-                    <label class="block text-sm font-medium text-white/75 mb-2">Description</label>
-                    <textarea id="bookDescription" name="description" rows="3" 
-                              placeholder="Enter book description..."
-                              class="w-full bg-[#424242] border border-gray-600/40 rounded-[15px] px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#2C7852] focus:ring-2 focus:ring-[#2C7852]/20 resize-none transition-all"></textarea>
+                    <label class="block text-sm font-medium text-white/75 mb-2" for="{{ form.description.id_for_label }}">Description</label>
+                    {{ form.description }}
+                    <div class="text-yellow-300 text-[1.4rem]">{{ form.description.errors }}</div>
                 </div>
                 
-                <!-- Publication Year and Image Row -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-white/75 mb-2">Publication Year</label>
-                        <input type="number" id="bookYear" name="year" min="1000" max="2100"
-                               class="w-full bg-[#424242] border border-gray-600/40 rounded-[15px] px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#2C7852] focus:ring-2 focus:ring-[#2C7852]/20 transition-all">
+                        <label class="block text-sm font-medium text-white/75 mb-2" for="{{ form.published_date.id_for_label }}">Publication Year</label>
+                        {{ form.published_date }}
+                        <div class="text-yellow-300 text-[1.4rem]">{{ form.published_date.errors }}</div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-white/75 mb-2">Book Image</label>
-                        <input type="file" id="bookImage" name="image" accept="image/*"
-                               class="w-full bg-[#424242] border border-gray-600/40 rounded-[15px] px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#2C7852] focus:ring-2 focus:ring-[#2C7852]/20 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#2C7852] file:text-white hover:file:bg-[#246b47]">
+                        <label class="block text-sm font-medium text-white/75 mb-2" for="{{ form.image.id_for_label }}">Book Image</label>
+                        {{ form.image }}
+                        <div class="text-yellow-300 text-[1.4rem]">{{ form.image.errors }}</div>
                     </div>
                 </div>
             </form>

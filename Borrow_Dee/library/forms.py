@@ -47,11 +47,33 @@ class BookForm(ModelForm):
                 'placeholder': 'Enter book title',
                 'class': 'w-full bg-[#424242] border border-gray-600/40 rounded-[15px] px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#2C7852] focus:ring-2 focus:ring-[#2C7852]/20 transition-all'
             }),
-            'published_date': DateInput(attrs={'type': 'date'}),
-            'isbn_number': TextInput(),
-            'amount': NumberInput(),
-            'description': Textarea(attrs={'rows': 4}),
-            'image': FileInput(),
+            'published_date': DateInput(attrs={
+                'type': 'date',
+                'class': 'w-full bg-[#424242] border border-gray-600/40 rounded-[15px] px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#2C7852] focus:ring-2 focus:ring-[#2C7852]/20 transition-all',
+                'required': True,
+                'placeholder': "Select publication date..."
+            }),
+            'isbn_number': TextInput(attrs={
+                'class': 'w-full bg-[#424242] border border-gray-600/40 rounded-[15px] px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#2C7852] focus:ring-2 focus:ring-[#2C7852]/20 transition-all',
+                'required': True,
+                'placeholder': "Enter book ISBN number..."
+            }),
+            'amount': NumberInput(attrs={
+                'class': 'w-full bg-[#424242] border border-gray-600/40 rounded-[15px] px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#2C7852] focus:ring-2 focus:ring-[#2C7852]/20 transition-all',
+                'required': True,
+            }),
+            'description': Textarea(attrs={
+                'class': 'w-full bg-[#424242] border border-gray-600/40 rounded-[15px] px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#2C7852] focus:ring-2 focus:ring-[#2C7852]/20 transition-all',
+                'rows': 4,
+                'required': True,
+                'placeholder': "Enter book description..."
+            }),
+            'image': FileInput(attrs={
+                'required': True,
+                'accept': 'image/*',
+                'placeholder': "Upload book image..."
+                
+            }),
         }
     
 class CategoryForm(ModelForm):
