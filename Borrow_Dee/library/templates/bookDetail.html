@@ -16,13 +16,53 @@
             <div class="book-detail-authors"><strong class="font-semibold">Authors : </strong>{{ book.author.all|join:", " }}</div>
             <div class="book-detail-categories"><strong class="font-semibold">Categories : </strong>{{ book.category.all|join:", " }}</div>
             <div class="book-detail-publish"><strong class="font-semibold">Publish Date : </strong>{{ book.published_date|date:"d F, Y" }}</div>
-            <div class="book-detail-copies mb-6"><strong class="font-semibold">Copies Avaliable : </strong>{{ book.copies_available }}</div>
+            <div class="book-detail-copies mb-6"><strong class="font-semibold">Copies Avaliable : </strong>{% if book.copies_available < 0 %}0{% else %}{{ book.copies_available  }}{% endif %}</div>
             <div class="book-detail-description"><strong class="font-semibold">Detail : </strong><br>{{ book.description }}</div>
-            {% if book.copies_available > 0 %}
-                <a href="#" class="inline-block mt-14 px-10 py-2 bg-[#A9907E] text-white rounded-[3rem] transition-all hover:bg-[#8c7869] shadow-xl">Borrow</a>
-            {% else %}
-                <a href="#" class="inline-block mt-14 px-10 py-2 bg-white border-2 border-[#403d39] text-[#403D39] rounded-[3rem] transition-all hover:bg-gray-200 shadow-xl">Reserve</a>
+            {% if user.is_authenticated %}
+                {% if borrowed %}
+                    <button disabled class="btn-borrow inline-block mt-14 px-10 py-2 bg-gray-500 text-white rounded-[3rem] transition-all shadow-xl">
+                        Borrowing
+                    </button>
+                {% elif book.copies_available > 0 %}
+                    <button data-book="{{ book.id }}" data-user="{{ user.username }}" class="btn-borrow cursor-pointer inline-block mt-14 px-10 py-2 bg-[#A9907E] text-white rounded-[3rem] transition-all hover:bg-[#8c7869] shadow-xl">
+                        Borrow
+                    </button>
+                {% else %}
+                    <button class="cursor-pointer inline-block mt-14 px-10 py-2 bg-white border-2 border-[#403d39] text-[#403D39] rounded-[3rem] transition-all hover:bg-gray-200 shadow-xl">Reserve</button>
+                {% endif %}
             {% endif %}
         </div>
     </div>
+{% endblock %}
+{% block script %} 
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const btnBorrow = document.querySelector('.btn-borrow');
+            if(!btnBorrow) return;
+            
+            btnBorrow.addEventListener('click', async () => {
+                const bookId = btnBorrow.dataset.book
+                const csrftoken = document.cookie.split('=').at(-1)
+
+                const borrowData = {"book": Number(bookId)}
+
+                try {
+                    const res = await fetch('http://127.0.0.1:8000/library/api/borrows/', {
+                        method: "POST",
+                        headers: { 
+                                    'Content-Type': 'application/json',
+                                    'X-CSRFToken': csrftoken,
+                                },
+                        body: JSON.stringify(borrowData),
+                    })
+
+                    if(res.ok)
+                        window.location.href = "{% url 'myborrows' %}"
+                } catch (err) {
+                    console.error(err.message);
+                }
+            })
+            
+        })
+    </script>
 {% endblock %}

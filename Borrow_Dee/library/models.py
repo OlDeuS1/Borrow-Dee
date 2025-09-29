@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import timedelta
+from datetime import timedelta, date
 from django.db.models import Max
 
 class Author(models.Model):
@@ -44,7 +44,7 @@ class Borrow(models.Model):
         OVERDUE = 'overdue', 'Overdue'
 
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    member = models.ForeignKey(Member, on_delete=models.CASCADE)
+    member = models.ForeignKey(Member, null=True, on_delete=models.CASCADE)
     borrow_date = models.DateField(auto_now_add=True)
     due_date = models.DateField(blank=True, null=True)
     return_date = models.DateField(blank=True, null=True)
@@ -53,6 +53,9 @@ class Borrow(models.Model):
 
     # ให้ due_date มีค่าเริ่มต้นเป็น borrow_date + กี่วัน
     def save(self, *args, **kwargs):
+        if not self.borrow_date:
+            self.borrow_date = date.today()
+
         if not self.due_date:
             self.due_date = self.borrow_date + timedelta(days=7) # กำหนดเลขวันได้
         super().save(*args, **kwargs)

@@ -8,9 +8,74 @@ from django.shortcuts import redirect, get_object_or_404
 from .forms import *
 from django.db import transaction
 from django.contrib.auth import login, logout
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import Group
+
+from django.http import Http404, HttpResponseForbidden
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from library.serializers import BookSerializer, CategorySerializer, AuthorSerializer, BorrowSerializer, MemberSerializer
+
+# API
+class MemberList(APIView):
+    def get(self, request, format=None):
+        members = Member.objects.all()
+        serializer = MemberSerializer(members, many=True)
+        return Response(serializer.data)
     
+class MemberDetail(APIView):
+    def get_object(self, member_id):
+        try:
+            return Member.objects.get(id = member_id)
+        except Member.DoesNotExist:
+            raise Http404
+
+    def get(self, request, member_id, format=None):
+        member = self.get_object(member_id)
+        serializer = MemberSerializer(member)
+        return Response(serializer.data)
+
+class BookList(APIView):
+    def get(self, request, format=None):
+        books = Book.objects.all()
+        serializer = BookSerializer(books, many=True)
+        return Response(serializer.data)
+
+class BorrowList(APIView):
+    def get(self, request, format=None):
+        borrows = Borrow.objects.all()
+        serializer = BorrowSerializer(borrows, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request, format=None):
+        try:
+            request.user = Member.objects.get(username = request.user.username)
+        except Member.DoesNotExist:
+            return Response({"error": "Member not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = BorrowSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(member=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class BorrowDetail(APIView):
+    def get_object(self, borrow_id):
+        try:
+            return Borrow.objects.get(id = borrow_id)
+        except Borrow.DoesNotExist:
+            raise Http404
+
+    def get(self, request, borrow_id, format=None):
+        borrow = self.get_object(borrow_id)
+        serializer = BorrowSerializer(borrow)
+        return Response(serializer.data)
+    # def put(self, request):
+        
+    # def delete(self, request):
+
+# Normal View 
 class LoginView(View):
 
     def get(self, request):
@@ -59,14 +124,20 @@ class RegisterView(View):
         
         return render(request, "register.html", {"form": form, "mem_form": mem_form})
 
-class IndexView(View):
+class IndexView(UserPassesTestMixin, View):
+    def test_func(self):
+        return not self.request.user.groups.filter(name = "Librarian").exists()
+    
     def get(self, request):
         books = Book.objects.annotate(borrow_count=Count('borrow'), avg_rating=Avg('rating__score'))
         popular_books = books.order_by('-borrow_count')[:14]
         new_books = books.order_by('-published_date')[:14]
         return render(request, "index.html", {"popular_books": popular_books, "new_books": new_books})
 
-class BrowseView(View):
+class BrowseView(UserPassesTestMixin, View):
+    def test_func(self):
+        return not self.request.user.groups.filter(name = "Librarian").exists()
+    
     def get(self, request):
         search_query = request.GET.get('search', '')
         sort = request.GET.get('sort', '')
@@ -111,10 +182,25 @@ class BrowseView(View):
 
         return render(request, "browse.html", context)
     
-class BookDetailView(View):
+class BookDetailView(UserPassesTestMixin, View):
+    def test_func(self):
+        return not self.request.user.groups.filter(name = "Librarian").exists()
+    
     def get(self, request, book_id):
         book = Book.objects.annotate(avg_rating=Avg('rating__score', default=0), borrow_count=Count('borrow'), copies_available=F('amount') - F('borrow_count')).get(id=book_id)
-        return render(request, "bookDetail.html", {"book": book})
+        borrowed = Borrow.objects.filter(member__username = request.user.username, book = book, status = "borrowed").first
+        return render(request, "bookDetail.html", {"book": book, "borrowed": borrowed})
+
+class MyBorrowsView(LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin, View):
+    login_url = 'login/'
+    permission_required = ["library.view_borrow", 'library.change_borrow']
+
+    def test_func(self):
+        return not self.request.user.groups.filter(name = "Librarian").exists()
+    
+    def get(self, request):
+            borrows = Borrow.objects.filter(member__username = request.user.username)
+            return render(request, 'myborrows.html', {"borrows": borrows})
     
 class DashboardView(View):
 

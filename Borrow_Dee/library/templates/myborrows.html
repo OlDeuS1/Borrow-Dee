@@ -1,0 +1,50 @@
+{% extends "layouts/layout.html" %}
+{% load static %}
+
+{% block title %} My borrows {% endblock %}
+
+{% block header %}
+    {% include "layouts/navigation.html" %}
+{% endblock %}
+
+{% block content %}
+    <div class="my-borrows">
+      <h1 class="my-borrows__title text-[4.2rem] mb-25">My borrows</h1>
+      <div class="my-borrows__content">
+        {% if borrows.count > 0 %}
+          <table class="my-borrows__table border-collapse w-full">
+            {% for borrow in borrows %}
+              <tr class="my-borrows__row border-t border-gray-300 text-[1.6rem]">
+                <td class="my-borrows__data py-8 align-middle">
+                  <img class="w-[15rem]" src="{% if borrow.book.image %}{{ borrow.book.image }}{% else %}{% static 'images/No_image_available.svg' %}{% endif %}" alt="{{ borrow.book.title }}">
+                </td>
+                <td class="my-borrows__data py-8">
+                  {{ borrow.book.title }}
+                  <div class="text-gray-500 text-[1.4rem]">{{ borrow.book.author.all|join:", " }}</div>
+                </td>
+                <td class="my-borrows__data py-8">
+                  Borrowed Date
+                  <div class="text-gray-500 text-[1.4rem]">{{ borrow.borrow_date|date:"d F, Y" }}</div>
+                </td>
+                <td class="my-borrows__data py-8">
+                  Due Date
+                  <div class="text-gray-500 text-[1.4rem]">{{ borrow.due_date|date:"d F, Y" }}</div>
+                </td>
+                <td class="my-borrows__data py-8">
+                  Status
+                  <div class="text-gray-500 text-[1.4rem]">{{ borrow.status }}</div>
+                </td>
+                <td class="my-borrows__data py-8 text-center">
+                  <button class="btn-renew inline-block cursor-pointer text-white px-8 py-3 rounded-[3rem] bg-[#E07A5F] transition-all hover:bg-[#ba5e49] shadow-xl">
+                    Renew
+                  </button>
+                </td>
+              </tr>
+            {% endfor %}
+          </table>
+        {% else %}
+          <div class="text-center p-8 text-gray-400">No borrows yet.</div>
+        {% endif %}
+      </div>
+    </div>
+{% endblock %}
