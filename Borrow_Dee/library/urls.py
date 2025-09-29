@@ -10,6 +10,7 @@ urlpatterns = [
     path("browse/", views.BrowseView.as_view(), name="browse"),
     path("books/<int:book_id>/", views.BookDetailView.as_view(), name="book_detail"),
     path("myborrows/", views.MyBorrowsView.as_view(), name="myborrows"),
+    path("myreservations/", views.MyReservationsView.as_view(), name="myreservations"),
     path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
     path("dashboard/books/", views.BookManagementView.as_view(), name="book_management"),
     path("dashboard/books/add/", views.AddBookView.as_view(), name="add_book"),
@@ -26,6 +27,7 @@ urlpatterns = [
     path('api/books/', views.BookList.as_view(), name="book-list"),
     path('api/borrows/', views.BorrowList.as_view(), name="borrow-list"),
     path('api/borrows/<int:borrow_id>/', views.BorrowDetail.as_view(), name="borrow-detail"),
+    path('api/reservations/', views.ReservationList.as_view(), name="reservation-list"),
 
     # TomSelect autocomplete URLs
     path("author-autocomplete/", views.AuthorAutocompleteView.as_view(), name="author-autocomplete"),
