@@ -35,6 +35,9 @@
         </div>
     </div>
     <div class="overflow-x-auto -mx-4 md:mx-0">
+        {% if books|length == 0 %}
+            <p class="text-center text-white/75 py-8">No books available.</p>
+        {% else %}
         <table class="min-w-full text-sm text-left">
             <thead class="text-gray-400 uppercase text-xs tracking-wider">
                 <tr class="border-b border-gray-600/40">
@@ -54,26 +57,26 @@
                 <tr class="table-row border-b border-gray-700/40 last:border-none">
                     <td class="px-4 py-3 align-top align-middle">{{ book.id }}</td>
                     <td class="my-borrows__data py-8 align-middle">
-                        <img class="w-[15rem]"
-                            src="{% if book.image %}{{ book.image }}{% else %}{% static 'images/No_image_available.svg' %}{% endif %}"
+                        <img class="w-[6rem] h-[8rem] object-cover"
+                            src="{% if book.image %}{{ book.image.url }}{% else %}{% static 'images/No_image_available.svg' %}{% endif %}"
                             alt="{{ book.title }}">
                     </td>
                     <td class="px-4 py-3 font-semibold align-middle">{{ book.title }}</td>
-                    <td class="px-4 py-3 align-top">
+                    <td class="px-4 py-3 align-middle">
                         <div class="space-y-1 flex flex-col gap-1">
                             {% for author in book.author.all %}
                                 <span class="status-badge status-available self-start ">{{ author.name }}</span>
                             {% endfor %}
                         </div>
                     </td>
-                    <td class="px-4 py-3 align-top">
+                    <td class="px-4 py-3 align-middle">
                         <div class="space-y-1 flex flex-col gap-1">
                             {% for category in book.category.all %}
                                 <span class="status-badge status-available self-start">{{ category.name }}</span>
                             {% endfor %}
                         </div>
                     </td>
-                    <td class="px-4 py-3 align-top align-middle">{{ book.isbn_number }}</td>
+                    <td class="px-4 py-3 align-middle">{{ book.isbn_number }}</td>
                     <td class="px-4 py-3 align-top align-middle">{{ book.amount }}</td>
                     <td class="px-4 py-3 align-top align-middle">
                         {% if book.amount > 0 %}
@@ -93,6 +96,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% endif %}
     </div>
 </div>
 

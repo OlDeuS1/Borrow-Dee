@@ -50,7 +50,6 @@ class BookForm(ModelForm):
             'published_date': DateInput(attrs={
                 'type': 'date',
                 'class': 'w-full bg-[#424242] border border-gray-600/40 rounded-[15px] px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#2C7852] focus:ring-2 focus:ring-[#2C7852]/20 transition-all',
-                'required': True,
                 'placeholder': "Select publication date..."
             }),
             'isbn_number': TextInput(attrs={
@@ -65,17 +64,32 @@ class BookForm(ModelForm):
             'description': Textarea(attrs={
                 'class': 'w-full bg-[#424242] border border-gray-600/40 rounded-[15px] px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#2C7852] focus:ring-2 focus:ring-[#2C7852]/20 transition-all',
                 'rows': 4,
-                'required': True,
                 'placeholder': "Enter book description..."
             }),
             'image': FileInput(attrs={
-                'required': True,
                 'accept': 'image/*',
                 'placeholder': "Upload book image..."
                 
             }),
         }
-    
+
+    def clean(self):
+        cleaned_data = super().clean()
+        isbn_number = cleaned_data.get('isbn_number')
+        amount = cleaned_data.get('amount')
+        published_date = cleaned_data.get('published_date')
+
+        if Book.objects.filter(isbn_number=isbn_number).exclude(pk=self.instance.pk).exists():
+            self.add_error('isbn_number', 'ISBN number must be unique.')
+            
+        if amount <= 0:
+            self.add_error('amount', 'Amount must be positive.')
+
+        if published_date and published_date > date.today():
+            self.add_error('published_date', 'Published date cannot be in the future.')
+
+        return cleaned_data
+
 class CategoryForm(ModelForm):
     class Meta:
         model = Category
