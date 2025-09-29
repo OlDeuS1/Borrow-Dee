@@ -24,4 +24,8 @@ urlpatterns = [
     path('api/books/', views.BookList.as_view(), name="book-list"),
     path('api/borrows/', views.BorrowList.as_view(), name="borrow-list"),
     path('api/borrows/<int:borrow_id>/', views.BorrowDetail.as_view(), name="borrow-detail"),
+    
+    # TomSelect autocomplete URLs
+    path("author-autocomplete/", views.AuthorAutocompleteView.as_view(), name="author-autocomplete"),
+    path("category-autocomplete/", views.CategoryAutocompleteView.as_view(), name="category-autocomplete"),
 ]

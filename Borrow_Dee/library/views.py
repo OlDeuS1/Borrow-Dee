@@ -10,6 +10,7 @@ from django.db import transaction
 from django.contrib.auth import login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import Group
+from django_tomselect.autocompletes import AutocompleteModelView
 
 from django.http import Http404, HttpResponseForbidden
 from rest_framework.views import APIView
@@ -211,9 +212,9 @@ class DashboardView(View):
 class BookManagementView(View):
 
     def get(self, request):
-        
-        return render(request, "book_management.html")
-    
+        form = BookForm()
+        return render(request, "book_management.html", {"form": form})
+
 class CategoryManagementView(View):
 
     def get(self, request):
@@ -243,3 +244,14 @@ class UserHistoryView(View):
     def get(self, request):
 
         return render(request, "user_history.html")
+
+# TomSelect Autocomplete Views
+class AuthorAutocompleteView(AutocompleteModelView):
+    model = Author
+    search_lookups = ['name__icontains']
+    value_field = 'name'
+
+class CategoryAutocompleteView(AutocompleteModelView):
+    model = Category
+    search_lookups = ['name__icontains']
+    value_field = 'name'

@@ -20,6 +20,7 @@
 </div>
 {% endblock %}
 {% block content %}
+{{ form.media }}
 <div class="dashboard-card p-8">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 divider pb-4">
         <h2 class="text-2xl font-semibold text-white">Books List</h2>
@@ -100,35 +101,33 @@
         
         <!-- Modal Body -->
         <div class="px-6 pb-6 sm:p-6">
-            <form id="addBookForm" method="post" action="#" class="space-y-4 sm:space-y-6">
+            <form id="addBookForm" method="post" action="{% url 'book_management' %}" class="space-y-4 sm:space-y-6">
                 {% csrf_token %}
                 
                 <!-- Book Title -->
                 <div>
-                    <label class="block text-sm font-medium text-white/75 mb-2">Book Title *</label>
-                    <input type="text" id="bookTitle" name="title" required 
-                           class="w-full bg-[#424242] border border-gray-600/40 rounded-[15px] px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#2C7852] focus:ring-2 focus:ring-[#2C7852]/20 transition-all">
+                    <label class="block text-sm font-medium text-white/75 mb-2" for="{{ form.title.id_for_label }}">Book Title *</label>
+                    {{ form.title }}
+                    <div class="text-yellow-300 text-[1.4rem]">{{ form.title.errors }}</div>
                 </div>
                 
                 <!-- Authors -->
                 <div>
-                    <label class="block text-sm font-medium text-white/75 mb-2">Authors *</label>
-                    <textarea id="bookAuthors" name="authors" required rows="2" 
-                              placeholder="Enter authors separated by commas"
-                              class="w-full bg-[#424242] border border-gray-600/40 rounded-[15px] px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#2C7852] focus:ring-2 focus:ring-[#2C7852]/20 resize-none transition-all"></textarea>
+                    <label class="block text-sm font-medium text-white/75 mb-2" for="{{ form.author.id_for_label }}">Authors *</label>
+                    {{ form.author }}
+                    <div class="text-yellow-300 text-[1.4rem]">{{ form.author.errors }}</div>
                 </div>
                 
                 <!-- Categories -->
                 <div>
                     <div class="flex items-center justify-between mb-2">
-                        <label class="block text-sm font-medium text-white/75">Categories</label>
+                        <label class="block text-sm font-medium text-white/75" for="{{ form.category.id_for_label }}">Categories</label>
                         <button type="button" id="createCategoryBtn" class="text-[#2C7852] hover:text-[#4CFFA6] text-sm font-medium flex items-center gap-1 transition-colors">
                             <span class="text-xs">＋</span> Create Categories
                         </button>
                     </div>
-                    <input type="text" id="bookCategories" name="categories" 
-                           placeholder="Enter categories separated by commas"
-                           class="w-full bg-[#424242] border border-gray-600/40 rounded-[15px] px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#2C7852] focus:ring-2 focus:ring-[#2C7852]/20 transition-all">
+                    {{ form.category }}
+                    <div class="text-yellow-300 text-[1.4rem]">{{ form.category.errors }}</div>
                 </div>
                 
                 <!-- ISBN and Copies Row -->
