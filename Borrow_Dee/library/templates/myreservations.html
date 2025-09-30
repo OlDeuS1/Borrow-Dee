@@ -30,7 +30,7 @@
                     {% elif reserve.status == 'completed' or reserve.status == 'cancelled' %}
                       -
                     {% else %} 
-                      #{{ reserve.queue_postion }}
+                      #{{ reserve.queue_order }}
                     {% endif %}
                   </div>
                 </td>
@@ -52,7 +52,7 @@
                       Cancel Reservation
                     </button>
                   {% else %} 
-                    <button class="btn-cancel-reserve hover:text-gray-700 hover:border-gray-700 inline-block cursor-pointer text-gray-500 px-8 py-3 rounded-[3rem] border-2 border-gray-500 transition-all shadow-xl">
+                    <button data-book="{{ reserve.book.id }}" data-reserve="{{ reserve.id }}" class="btn-cancel-reserve hover:text-gray-700 hover:border-gray-700 inline-block cursor-pointer text-gray-500 px-8 py-3 rounded-[3rem] border-2 border-gray-500 transition-all shadow-xl">
                       Cancel Reservation
                     </button>
                   {% endif %}
@@ -66,4 +66,37 @@
         {% endif %}
       </div>
     </div>
+{% endblock %}
+{% block script %}
+    <script>
+      const btnCancelReserve = document.querySelector('.btn-cancel-reserve');
+      if(btnCancelReserve){
+        btnCancelReserve.addEventListener('click', async function(e) {
+          const book = e.target.dataset.book
+          const reserve = e.target.dataset.reserve
+          const csrftoken = document.cookie.split('=').at(-1)
+
+          try {
+            const res = await fetch(`http://127.0.0.1:8000/library/api/reservations/${reserve}/`, {
+              method: "PATCH",
+              headers: { 
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken,
+                        },
+              body: JSON.stringify({"book": book, status: 'cancelled'}),
+            })
+            
+            console.log(await res.json())
+
+            if(res.ok){
+              location.reload()
+            }
+
+          } catch(err) {
+            alert(err.message)
+            console.log(err.message)
+          }
+        })
+      }
+    </script>
 {% endblock %}

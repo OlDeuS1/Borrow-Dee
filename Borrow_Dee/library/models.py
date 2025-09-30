@@ -27,6 +27,17 @@ class Book(models.Model):
     def __str__(self):
         return self.title
     
+    class Meta:
+        permissions = [
+            # Member
+            ('can_view_all_book', 'Can view all book'),
+            ('can_search_books', 'Can search books'),
+            ('can_filter_books', 'Can filter books'),
+            ('can_borrow_book', 'Can borrow book'),
+            ('can_reserve_book', 'Can reserve book'),
+            ('can_rating_book', 'Can rating book'),
+        ]
+    
 class Member(models.Model):
     username = models.CharField(max_length=150)
     email = models.EmailField(unique=True)
@@ -35,6 +46,13 @@ class Member(models.Model):
 
     def __str__(self):
         return self.username
+    
+    class Meta:
+        permissions = [
+            # Librarian
+            ('can_view_all_member', 'Can view all member'),
+            ('can_view_member_history', 'Can view member history'),
+        ]
     
 class Borrow(models.Model):
 
@@ -63,6 +81,18 @@ class Borrow(models.Model):
     def __str__(self):
         return f"{self.member.username} borrowed {self.book.title}"
     
+    class Meta:
+        permissions = [
+            # Member
+            ('can_renew_own_borrow', 'Can renew own borrow'),
+            ('can_view_own_borrow', 'Can view own borrow'),
+            ('can_view_own_borrow_history', 'Can view own borrow history'),
+
+            # Librarian
+            ('can_view_all_borrow', 'Can view all borrow'),
+            ('can_update_borrow_status', 'Can update borrow status'),
+        ]
+    
 class Rating(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
@@ -84,18 +114,20 @@ class Reservation(models.Model):
     reservation_date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=choices.choices, default=choices.WAITING)
     queue_order = models.IntegerField(blank=True, null=True) # ลำดับคิวการจองของหนังสือแต่ละเล่ม
-
-    def queue_postion(self):
-        if self.status == self.choices.WAITING:
-            position = Reservation.objects.filter(book=self.book, status=self.choices.WAITING, reservation_date__lt=self.reservation_date).count() + 1
-            return position
-        return None
+            
+    def update_queue_all(self):
+        reservations = Reservation.objects.filter(status = self.choices.WAITING, book=self.book).order_by('-reservation_date')
+        count = 0
+        for r in reservations:
+            count += 1
+            r.queue_order = count
+            r.save()
 
     def save(self, *args, **kwargs):
         if not self.queue_order:
             # หาลำดับถัดไปสำหรับหนังสือเล่มนี้
             last_order = Reservation.objects.filter(
-                book=self.book
+                book=self.book, status=self.choices.WAITING
             ).aggregate(
                 Max('queue_order')
             )['queue_order__max']
@@ -105,3 +137,14 @@ class Reservation(models.Model):
 
     def __str__(self):
         return f"{self.member.username} reserved {self.book.title} (Queue: {self.queue_order})"
+    
+    class Meta:
+        permissions = [
+            # Member
+            ('can_cancel_own_reservation', 'Can cancel own reservation'),
+            ('can_view_own_reservation', 'Can view own reservation'),
+
+            # Librarian
+            ('can_view_all_reservation', 'Can view all reservation'),
+            ('can_update_reservation_status', 'Can update reservation status'),
+        ]

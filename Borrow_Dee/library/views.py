@@ -16,58 +16,12 @@ from django.http import Http404, HttpResponseForbidden
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from library.serializers import BookSerializer, CategorySerializer, AuthorSerializer, BorrowSerializer, MemberSerializer, ReservationSerializer
+from library.serializers import BorrowSerializer, ReservationSerializer
 
 # API
 
-# api/members/ 
-class MemberList(APIView):
-    def get(self, request, format=None):
-        members = Member.objects.all()
-        serializer = MemberSerializer(members, many=True)
-        return Response(serializer.data)
-
-# api/members/<int:member_id> 
-class MemberDetail(APIView):
-    def get_object(self, member_id):
-        try:
-            return Member.objects.get(id = member_id)
-        except Member.DoesNotExist:
-            raise Http404
-
-    def get(self, request, member_id, format=None):
-        member = self.get_object(member_id)
-        serializer = MemberSerializer(member)
-        return Response(serializer.data)
-
-# api/books/
-class BookList(APIView):
-    def get(self, request, format=None):
-        books = Book.objects.all()
-        serializer = BookSerializer(books, many=True)
-        return Response(serializer.data)
-    
-# api/books/<int:book_id>/reservations/
-class BookReservationList(APIView):
-    def get_object(self, book_id):
-        try:
-            return Book.objects.get(id = book_id)
-        except Book.DoesNotExist:
-            raise Http404
-
-    def get(self, request, book_id, format=None):
-        book = self.get_object(book_id)
-        reservations = Reservation.objects.filter(book = book, status = "waiting");
-        serializer = ReservationSerializer(reservations, many=True)
-        return Response(serializer.data)
-
 # api/borrows/
 class BorrowList(APIView):
-    def get(self, request, format=None):
-        borrows = Borrow.objects.all()
-        serializer = BorrowSerializer(borrows, many=True)
-        return Response(serializer.data)
-    
     def post(self, request, format=None):
         try:
             request.user = Member.objects.get(username = request.user.username)
@@ -98,11 +52,6 @@ class BorrowDetail(APIView):
 
 # api/reservations/
 class ReservationList(APIView):
-    def get(self, request, format=None):
-        reservations = Reservation.objects.all()
-        serializer = ReservationSerializer(reservations, many=True)
-        return Response(serializer.data)
-    
     def post(self, request, format=None):
         try:
             request.user = Member.objects.get(username = request.user.username)
@@ -114,6 +63,29 @@ class ReservationList(APIView):
             serializer.save(member=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# api/reservations/<int:reserve_id>/
+class ReservationDetail(APIView):
+    def get_object(self, reserve_id):
+        try:
+            return Reservation.objects.get(id = reserve_id)
+        except Reservation.DoesNotExist:
+            raise Http404
+
+    def patch(self, request, reserve_id, format=None):
+        try:
+            request.user = Member.objects.get(username = request.user.username)
+        except Member.DoesNotExist:
+            return Response({"error": "Member not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        reservation = self.get_object(reserve_id)
+        serializer = ReservationSerializer(reservation, data=request.data)
+
+        if serializer.is_valid():
+            serializer.save()
+            reservation.update_queue_all()
+            return Response(serializer.data, status.HTTP_200_OK)
+        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
 
 # Normal View 
 class LoginView(View):
@@ -164,6 +136,7 @@ class RegisterView(View):
         
         return render(request, "register.html", {"form": form, "mem_form": mem_form})
 
+# Home page
 class IndexView(UserPassesTestMixin, View):
     def test_func(self):
         return not self.request.user.groups.filter(name = "Librarian").exists()

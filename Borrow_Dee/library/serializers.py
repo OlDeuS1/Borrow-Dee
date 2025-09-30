@@ -1,28 +1,5 @@
 from rest_framework import serializers
-from library.models import Book, Category, Author, Borrow, Member, Reservation
-
-class MemberSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Member
-        fields = ['id', 'username', 'email', 'phone_number', 'address']
-
-class AuthorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Author
-        fields = ['id', 'name']
-
-class CategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ['id', 'name']
-
-class BookSerializer(serializers.ModelSerializer):
-    author = AuthorSerializer(many=True, read_only=True)
-    category = CategorySerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Book
-        fields = ['id', 'title', 'published_date', 'isbn_number', 'description', 'amount', 'author', 'category', 'image']
+from library.models import Borrow, Reservation
 
 class BorrowSerializer(serializers.ModelSerializer):
     class Meta:
