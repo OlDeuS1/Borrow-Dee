@@ -244,12 +244,43 @@ class AddBookView(View):
         return render(request, "add_book.html", {"form": form})
     
     def post(self, request):
-        form = BookForm(request.POST, request.FILES)
+        post_data = request.POST.copy()
+        
+        post_data.pop('author', None)
+        post_data.pop('category', None)
+        
+        form = BookForm(post_data, request.FILES)
         if form.is_valid():
-            book = form.save()
+            book = form.save(commit=False)
+            book.save()
+            
+            author_list = request.POST.getlist('author')
+            for author_value in author_list:
+                try:
+                    author_id = int(author_value)
+                    author_obj = Author.objects.get(id=author_id)
+                    book.author.add(author_obj)
+                except (ValueError, Author.DoesNotExist):
+                    if author_value.strip():
+                        author_obj, created = Author.objects.get_or_create(name=author_value.strip())
+                        book.author.add(author_obj)
+
+            category_list = request.POST.getlist('category')
+            for category_value in category_list:
+                try:
+                    category_id = int(category_value)
+                    category_obj = Category.objects.get(id=category_id)
+                    book.category.add(category_obj)
+                except (ValueError, Category.DoesNotExist):
+                    if category_value.strip():
+                        category_obj, created = Category.objects.get_or_create(name=category_value.strip())
+                        book.category.add(category_obj)
+            
             print(f"Book '{book.title}' created successfully")
             return redirect("book_management")
-        return render(request, "add_book.html", {"form": form})
+        else:
+            form.data = request.POST
+            return render(request, "add_book.html", {"form": form})
     
 class EditBookView(View):
     
@@ -259,13 +290,66 @@ class EditBookView(View):
         return render(request, "edit_book.html", {"form": form, "book": book})
     
     def post(self, request, book_id):
+        # Create a copy of POST data without author and category for form validation
+        post_data = request.POST.copy()
+        
+        # Remove author and category from form validation since we'll handle them manually
+        post_data.pop('author', None)
+        post_data.pop('category', None)
+        
         book = get_object_or_404(Book, id=book_id)
-        form = BookForm(request.POST, request.FILES, instance=book)
+        form = BookForm(post_data, request.FILES, instance=book)
         if form.is_valid():
-            book = form.save()
+            book = form.save(commit=False)
+            book.save()  # Save the book first to get an ID for many-to-many relationships
+            
+            # Clear existing relationships
+            book.author.clear()
+            book.category.clear()
+            
+            # Handle authors - TomSelect can send both IDs and new text values
+            author_list = request.POST.getlist('author')
+            for author_value in author_list:
+                try:
+                    # Try to get existing author by ID
+                    author_id = int(author_value)
+                    author_obj = Author.objects.get(id=author_id)
+                    book.author.add(author_obj)
+                except (ValueError, Author.DoesNotExist):
+                    # If not an ID or doesn't exist, create new author with the text value
+                    if author_value.strip():  # Only create if not empty
+                        author_obj, created = Author.objects.get_or_create(name=author_value.strip())
+                        book.author.add(author_obj)
+
+            # Handle categories - same logic as authors
+            category_list = request.POST.getlist('category')
+            for category_value in category_list:
+                try:
+                    # Try to get existing category by ID
+                    category_id = int(category_value)
+                    category_obj = Category.objects.get(id=category_id)
+                    book.category.add(category_obj)
+                except (ValueError, Category.DoesNotExist):
+                    # If not an ID or doesn't exist, create new category with the text value
+                    if category_value.strip():  # Only create if not empty
+                        category_obj, created = Category.objects.get_or_create(name=category_value.strip())
+                        book.category.add(category_obj)
+            
+            # Validate that at least one author and category were added
+            if not book.author.exists():
+                form.add_error(None, 'At least one author is required.')
+                return render(request, "edit_book.html", {"form": form, "book": book})
+            
+            if not book.category.exists():
+                form.add_error(None, 'At least one category is required.')
+                return render(request, "edit_book.html", {"form": form, "book": book})
+            
             print(f"Book '{book.title}' updated successfully")
             return redirect("book_management")
-        return render(request, "edit_book.html", {"form": form, "book": book})
+        else:
+            # Add back author and category data for re-rendering the form
+            form.data = request.POST
+            return render(request, "edit_book.html", {"form": form, "book": book})
 
 class CategoryManagementView(View):
 
