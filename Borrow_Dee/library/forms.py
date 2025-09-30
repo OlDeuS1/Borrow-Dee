@@ -20,22 +20,23 @@ class BookForm(ModelForm):
         ),
         attrs={
                 'class': 'w-full bg-[#424242] border border-gray-600/40 rounded-[15px] px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#2C7852] focus:ring-2 focus:ring-[#2C7852]/20 transition-all',
-                'required': True,
-            }
+            },
+        required=False
     )
     
     category = TomSelectModelMultipleChoiceField(
         config=TomSelectConfig(
             url='category-autocomplete',
+            create=True,
             highlight=True,
             close_after_select=False,
             open_on_focus=True,
-            placeholder="Select categories...",
-            attrs={
-                'class': 'w-full bg-[#424242] border border-gray-600/40 rounded-[15px] px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#2C7852] focus:ring-2 focus:ring-[#2C7852]/20 transition-all',
-                'required': True,
-            }
-        )
+            placeholder="Select or type new categories...",
+        ),
+        attrs={
+            'class': 'w-full bg-[#424242] border border-gray-600/40 rounded-[15px] px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#2C7852] focus:ring-2 focus:ring-[#2C7852]/20 transition-all',
+        },
+        required=False
     )
     
     class Meta:
