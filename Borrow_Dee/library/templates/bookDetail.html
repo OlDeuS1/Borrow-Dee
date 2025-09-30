@@ -63,6 +63,7 @@
                         if(res.ok)
                             window.location.href = "{% url 'myborrows' %}"
                     } catch (err) {
+                        alert(err.message)
                         console.error(err.message);
                     }
                 })
@@ -87,6 +88,7 @@
                         if(res.ok)
                             window.location.href = "{% url 'myreservations' %}"
                     } catch (err) {
+                        alert(err.message)
                         console.error(err.message);
                     }
                 })

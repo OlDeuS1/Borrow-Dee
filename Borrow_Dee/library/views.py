@@ -46,6 +46,20 @@ class BookList(APIView):
         books = Book.objects.all()
         serializer = BookSerializer(books, many=True)
         return Response(serializer.data)
+    
+# api/books/<int:book_id>/reservations/
+class BookReservationList(APIView):
+    def get_object(self, book_id):
+        try:
+            return Book.objects.get(id = book_id)
+        except Book.DoesNotExist:
+            raise Http404
+
+    def get(self, request, book_id, format=None):
+        book = self.get_object(book_id)
+        reservations = Reservation.objects.filter(book = book, status = "waiting");
+        serializer = ReservationSerializer(reservations, many=True)
+        return Response(serializer.data)
 
 # api/borrows/
 class BorrowList(APIView):
@@ -237,7 +251,7 @@ class MyReservationsView(LoginRequiredMixin, PermissionRequiredMixin, UserPasses
         return not self.request.user.groups.filter(name = "Librarian").exists()
     
     def get(self, request):
-        reservations = Reservation.objects.filter(member__username = request.user.username)
+        reservations = Reservation.objects.filter(member__username = request.user.username).exclude(status = 'completed')
         return render(request, 'myreservations.html', {"reservations": reservations})
     
 class DashboardView(View):

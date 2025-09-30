@@ -75,6 +75,7 @@ class Reservation(models.Model):
 
     class choices(models.TextChoices):
         WAITING = 'waiting', 'Waiting'
+        READY = 'ready', 'Ready'
         CANCELLED = 'cancelled', 'Cancelled'
         COMPLETED = 'completed', 'Completed'
         
@@ -83,6 +84,12 @@ class Reservation(models.Model):
     reservation_date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=choices.choices, default=choices.WAITING)
     queue_order = models.IntegerField(blank=True, null=True) # ลำดับคิวการจองของหนังสือแต่ละเล่ม
+
+    def queue_postion(self):
+        if self.status == self.choices.WAITING:
+            position = Reservation.objects.filter(book=self.book, status=self.choices.WAITING, reservation_date__lt=self.reservation_date).count() + 1
+            return position
+        return None
 
     def save(self, *args, **kwargs):
         if not self.queue_order:

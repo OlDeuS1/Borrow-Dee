@@ -25,10 +25,12 @@
                 <td class="my-reservations__data py-8">
                   Your Queue Position
                   <div class="text-gray-500 text-[1.4rem]">
-                    {% if reserve.queue_order == 1 and reserve.status == 'waiting' %}
+                    {% if reserve.status == 'ready' %}
                       It's your turn.
+                    {% elif reserve.status == 'completed' or reserve.status == 'cancelled' %}
+                      -
                     {% else %} 
-                    #{{ reserve.queue_order }}
+                      #{{ reserve.queue_postion }}
                     {% endif %}
                   </div>
                 </td>
@@ -41,13 +43,19 @@
                   <div class="text-gray-500 text-[1.4rem]">{{ reserve.status }}</div>
                 </td>
                 <td class="my-reservations__data py-8 text-center">
-                  {% if reserve.queue_order == 1 and reserve.status == 'waiting' %}
-                      <button class="btn-borrow-now inline-block cursor-pointer text-white px-8 py-3 rounded-[3rem] bg-[#E07A5F] transition-all hover:bg-[#ba5e49] shadow-xl">
-                        Borrow Now
-                      </button>
-                    {% else %} 
-                    #{{ reserve.queue_order }}
-                    {% endif %}
+                  {% if reserve.status == 'ready' %}
+                    <button class="btn-borrow-now inline-block cursor-pointer text-white px-8 py-3 rounded-[3rem] bg-[#E07A5F] transition-all hover:bg-[#ba5e49] shadow-xl">
+                      Borrow Now
+                    </button>
+                  {% elif reserve.status == 'cancelled' %}
+                    <button disabled class="btn-cancel-reserve inline-block text-gray-400 px-8 py-3 rounded-[3rem] border-2 border-gray-400 transition-all shadow-xl">
+                      Cancel Reservation
+                    </button>
+                  {% else %} 
+                    <button class="btn-cancel-reserve hover:text-gray-700 hover:border-gray-700 inline-block cursor-pointer text-gray-500 px-8 py-3 rounded-[3rem] border-2 border-gray-500 transition-all shadow-xl">
+                      Cancel Reservation
+                    </button>
+                  {% endif %}
                   
                 </td>
               </tr>
