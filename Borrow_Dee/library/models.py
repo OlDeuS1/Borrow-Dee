@@ -27,6 +27,10 @@ class Book(models.Model):
     def __str__(self):
         return self.title
     
+    def copies_available(self):
+        available = self.amount - self.borrow_set.exclude(status = 'returned').count() - self.reservation_set.filter(status__in = ['ready', 'waiting']).count()
+        return max(0, available)
+
     class Meta:
         permissions = [
             # Member

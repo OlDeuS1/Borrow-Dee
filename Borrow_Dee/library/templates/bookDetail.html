@@ -16,7 +16,7 @@
             <div class="book-detail-authors"><strong class="font-semibold">Authors : </strong>{{ book.author.all|join:", " }}</div>
             <div class="book-detail-categories"><strong class="font-semibold">Categories : </strong>{{ book.category.all|join:", " }}</div>
             <div class="book-detail-publish"><strong class="font-semibold">Publish Date : </strong>{{ book.published_date|date:"d F, Y" }}</div>
-            <div class="book-detail-copies mb-6"><strong class="font-semibold">Copies Avaliable : </strong>{% if book.copies_available < 1 %}0{% else %}{{ book.copies_available  }}{% endif %}</div>
+            <div class="book-detail-copies mb-6"><strong class="font-semibold">Copies Avaliable : </strong>{{ book.copies_available }}</div>
             <div class="book-detail-description"><strong class="font-semibold">Detail : </strong><br>{{ book.description }}</div>
             {% if user.is_authenticated %}
                 {% if borrowed %}
@@ -28,11 +28,11 @@
                         Reserving
                     </button>
                 {% elif book.copies_available > 0 %}
-                    <button data-book="{{ book.id }}" class="btn-borrow cursor-pointer inline-block mt-14 px-10 py-2 bg-[#A9907E] text-white rounded-[3rem] transition-all hover:bg-[#8c7869] shadow-xl">
+                    <button data-book="{{ book.id }}" data-fetchUrl="{% url 'borrow-list' %}" data-redirectUrl="{% url 'myborrows' %}" class="btn-borrow cursor-pointer inline-block mt-14 px-10 py-2 bg-[#A9907E] text-white rounded-[3rem] transition-all hover:bg-[#8c7869] shadow-xl">
                         Borrow
                     </button>
                 {% else %}
-                    <button data-book="{{ book.id }}" class="btn-reserve cursor-pointer inline-block mt-14 px-10 py-2 bg-white border-2 border-[#403d39] text-[#403D39] rounded-[3rem] transition-all hover:bg-gray-200 shadow-xl">Reserve</button>
+                    <button data-book="{{ book.id }}" data-fetchurl="{% url 'reservation-list' %}" data-redirecturl="{% url 'myreservations' %}" class="btn-reserve cursor-pointer inline-block mt-14 px-10 py-2 bg-white border-2 border-[#403d39] text-[#403D39] rounded-[3rem] transition-all hover:bg-gray-200 shadow-xl">Reserve</button>
                 {% endif %}
             {% endif %}
         </div>
@@ -40,58 +40,44 @@
 {% endblock %}
 {% block script %} 
     <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
+        const handleAction = async function(e){
+            const csrftoken = document.cookie.split('=').at(-1)
+            const bodyData = {"book": Number(e.target.dataset.book)}
+
+            try {
+                const res = await fetch(e.target.dataset.fetchurl, {
+                    method: "POST",
+                    headers: { 
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': csrftoken,
+                            },
+                    body: JSON.stringify(bodyData),
+                })
+
+                if(res.ok)
+                    window.location.href = e.target.dataset.redirecturl
+
+                else {
+                    alert(await res.json())
+                    console.error(await res.json());
+                }  
+
+             } catch (err) {
+                alert(err.message)
+                console.error(err.message);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
             const btnBorrow = document.querySelector('.btn-borrow');
             const btnReserve = document.querySelector('.btn-reserve')
 
-            if(btnBorrow) {
-                btnBorrow.addEventListener('click', async () => {
-                    const bookId = btnBorrow.dataset.book
-                    const csrftoken = document.cookie.split('=').at(-1)
-                    const borrowData = {"book": Number(bookId)}
-
-                    try {
-                        const res = await fetch('http://127.0.0.1:8000/library/api/borrows/', {
-                            method: "POST",
-                            headers: { 
-                                        'Content-Type': 'application/json',
-                                        'X-CSRFToken': csrftoken,
-                                    },
-                            body: JSON.stringify(borrowData),
-                        })
-
-                        if(res.ok)
-                            window.location.href = "{% url 'myborrows' %}"
-                    } catch (err) {
-                        alert(err.message)
-                        console.error(err.message);
-                    }
-                })
+            if(btnBorrow){
+                btnBorrow.addEventListener('click', (e) => handleAction(e))
             }
 
-            if(btnReserve) {
-                btnReserve.addEventListener('click', async () => {
-                    const bookId = btnReserve.dataset.book
-                    const csrftoken = document.cookie.split('=').at(-1)
-                    const reserveData = {"book": Number(bookId)}
-
-                    try {
-                        const res = await fetch('http://127.0.0.1:8000/library/api/reservations/', {
-                            method: "POST",
-                            headers: { 
-                                        'Content-Type': 'application/json',
-                                        'X-CSRFToken': csrftoken,
-                                    },
-                            body: JSON.stringify(reserveData),
-                        })
-
-                        if(res.ok)
-                            window.location.href = "{% url 'myreservations' %}"
-                    } catch (err) {
-                        alert(err.message)
-                        console.error(err.message);
-                    }
-                })
+            if(btnReserve){
+                btnReserve.addEventListener('click', (e) => handleAction(e))
             }
         })
     </script>

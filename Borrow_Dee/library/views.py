@@ -84,8 +84,8 @@ class ReservationDetail(APIView):
         if serializer.is_valid():
             serializer.save()
             reservation.update_queue_all()
-            return Response(serializer.data, status.HTTP_200_OK)
-        return Response(serializer.errors, status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Normal View 
 class LoginView(View):
@@ -153,7 +153,12 @@ class BrowseView(View):
         filter_authors = request.GET.getlist('author')
         filter_availability = request.GET.get('available', '')
 
-        books = Book.objects.annotate(borrow_count=Count('borrow', filter=~Q(borrow__status='returned'), distinct=True), available_count=F('amount') - F('borrow_count'), avg_rating=Avg('rating__score', default=0))
+        books = Book.objects.annotate(
+                                        borrow_count=Count('borrow', filter=~Q(borrow__status='returned'), distinct=True),
+                                        reservation_count=Count('reservation', filter=Q(reservation__status__in = ['ready', 'waiting']), distinct=True),
+                                        available_count=F('amount') - F('borrow_count') - F('reservation_count'), 
+                                        avg_rating=Avg('rating__score', default=0)
+                                    )
         authors = Author.objects.all()
         categories = Category.objects.all()
 
@@ -196,18 +201,15 @@ class BookDetailView(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = ["library.can_borrow_book", 'library.can_reserve_book', 'library.view_book']
     
     def get(self, request, book_id):
-        book = Book.objects.annotate(avg_rating=Avg('rating__score', default=0), borrow_count=Count('borrow', filter=~Q(borrow__status='returned'), distinct=True), copies_available=F('amount') - F('borrow_count')).get(id=book_id)
-        borrowed = Borrow.objects.filter(Q(member__username = request.user.username), Q(book = book), ~Q(status = "returned")).first
-        reserved = Reservation.objects.filter(member__username = request.user.username, book = book, status = "waiting").first
+        book = Book.objects.annotate(avg_rating=Avg('rating__score', default=0)).get(id=book_id)
+        borrowed = Borrow.objects.filter(Q(member__username = request.user.username), Q(book = book), ~Q(status = "returned")).exists()
+        reserved = Reservation.objects.filter(member__username = request.user.username, book = book, status__in = ['ready', 'waiting']).exists()
         return render(request, "bookDetail.html", {"book": book, "borrowed": borrowed, "reserved": reserved})
 
 # MyBorrows page
 class MyBorrowsView(LoginRequiredMixin, PermissionRequiredMixin, View):
     login_url = 'login'
     permission_required = ["library.can_renew_own_borrow", 'library.can_view_own_borrow']
-
-    def test_func(self):
-        return not self.request.user.groups.filter(name = "Librarian").exists()
     
     def get(self, request):
             borrows = Borrow.objects.filter(member__username = request.user.username).order_by('-borrow_date')
@@ -217,9 +219,6 @@ class MyBorrowsView(LoginRequiredMixin, PermissionRequiredMixin, View):
 class MyReservationsView(LoginRequiredMixin, PermissionRequiredMixin, View):
     login_url = 'login'
     permission_required = ["library.can_cancel_own_reservation", 'library.can_view_own_reservation', 'library.can_borrow_book']
-
-    def test_func(self):
-        return not self.request.user.groups.filter(name = "Librarian").exists()
     
     def get(self, request):
         reservations = Reservation.objects.filter(member__username = request.user.username).exclude(status = 'completed')
