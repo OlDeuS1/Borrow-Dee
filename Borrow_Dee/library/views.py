@@ -8,7 +8,7 @@ from django.shortcuts import redirect, get_object_or_404
 from .forms import *
 from django.db import transaction
 from django.contrib.auth import login, logout
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import Group
 from django_tomselect.autocompletes import AutocompleteModelView
 
@@ -137,20 +137,15 @@ class RegisterView(View):
         return render(request, "register.html", {"form": form, "mem_form": mem_form})
 
 # Home page
-class IndexView(UserPassesTestMixin, View):
-    def test_func(self):
-        return not self.request.user.groups.filter(name = "Librarian").exists()
-    
+class IndexView(View):
     def get(self, request):
         books = Book.objects.annotate(borrow_count=Count('borrow'), avg_rating=Avg('rating__score'))
         popular_books = books.order_by('-borrow_count')[:14]
         new_books = books.order_by('-published_date')[:14]
         return render(request, "index.html", {"popular_books": popular_books, "new_books": new_books})
 
-class BrowseView(UserPassesTestMixin, View):
-    def test_func(self):
-        return not self.request.user.groups.filter(name = "Librarian").exists()
-    
+# Browse page
+class BrowseView(View):
     def get(self, request):
         search_query = request.GET.get('search', '')
         sort = request.GET.get('sort', '')
@@ -194,10 +189,11 @@ class BrowseView(UserPassesTestMixin, View):
         }
 
         return render(request, "browse.html", context)
-    
-class BookDetailView(UserPassesTestMixin, View):
-    def test_func(self):
-        return not self.request.user.groups.filter(name = "Librarian").exists()
+
+# BookDetail page
+class BookDetailView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = 'login'
+    permission_required = ["library.can_borrow_book", 'library.can_reserve_book', 'library.view_book']
     
     def get(self, request, book_id):
         book = Book.objects.annotate(avg_rating=Avg('rating__score', default=0), borrow_count=Count('borrow', filter=~Q(borrow__status='returned'), distinct=True), copies_available=F('amount') - F('borrow_count')).get(id=book_id)
@@ -205,9 +201,10 @@ class BookDetailView(UserPassesTestMixin, View):
         reserved = Reservation.objects.filter(member__username = request.user.username, book = book, status = "waiting").first
         return render(request, "bookDetail.html", {"book": book, "borrowed": borrowed, "reserved": reserved})
 
-class MyBorrowsView(LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin, View):
-    login_url = 'login/'
-    permission_required = ["library.view_borrow", 'library.change_borrow']
+# MyBorrows page
+class MyBorrowsView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = 'login'
+    permission_required = ["library.can_renew_own_borrow", 'library.can_view_own_borrow']
 
     def test_func(self):
         return not self.request.user.groups.filter(name = "Librarian").exists()
@@ -216,9 +213,10 @@ class MyBorrowsView(LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestM
             borrows = Borrow.objects.filter(member__username = request.user.username).order_by('-borrow_date')
             return render(request, 'myborrows.html', {"borrows": borrows})
 
-class MyReservationsView(LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin, View):
-    login_url = 'login/'
-    permission_required = ["library.view_reservation", 'library.change_reservation']
+# MyReservations page
+class MyReservationsView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = 'login'
+    permission_required = ["library.can_cancel_own_reservation", 'library.can_view_own_reservation', 'library.can_borrow_book']
 
     def test_func(self):
         return not self.request.user.groups.filter(name = "Librarian").exists()
