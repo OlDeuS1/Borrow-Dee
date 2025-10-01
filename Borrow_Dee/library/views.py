@@ -244,8 +244,18 @@ class DashboardView(View):
 class BookManagementView(View):
 
     def get(self, request):
-        books = Book.objects.all().order_by('id')
-        return render(request, "book_management.html", {"books": books})
+        search_query = request.GET.get('search', '')
+        books = Book.objects.all()
+        if search_query:
+            books = books.filter(title__icontains=search_query)
+        book_total = books.count()
+        
+        context = {
+            "books": books.order_by('id'),
+            "book_total": book_total,
+            "search_query": search_query,
+        }
+        return render(request, "book_management.html", context)
 
 class AddBookView(View):
     
