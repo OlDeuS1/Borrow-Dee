@@ -12,10 +12,10 @@
 <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-10">
     <h1 class="text-4xl font-bold text-white">Book Management</h1>
     <div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-        <div class="relative flex-1 min-w-[260px]">
-            <input type="text" placeholder="Search books..." class="search-input pr-12" />
-            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
-        </div>
+        <form method="GET" class="relative flex-1 min-w-[260px]">
+            <input name="search" id="search" value="{{ request.GET.search }}" type="text" placeholder="Search books..." class="search-input pr-12" />
+            <button type="submit" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">🔍</button>
+        </form>
         <a href="{% url 'add_book' %}" class="view-more-btn px-8 py-3 text-white font-medium flex items-center justify-center gap-2">
             <span class="text-lg leading-none">＋</span> Add Book
         </a>
@@ -27,7 +27,7 @@
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 divider pb-4">
         <h2 class="text-2xl font-semibold text-white">Books List</h2>
         <div class="flex gap-2 text-sm text-gray-400">
-            <span><strong class="text-white">2</strong> total</span>
+            <span><strong class="text-white">{{ book_total }}</strong> total</span>
             <span class="hidden sm:inline">•</span>
             <span><strong class="text-[#4CFFA6]">1</strong> available</span>
             <span class="hidden sm:inline">•</span>
