@@ -117,30 +117,12 @@ class Reservation(models.Model):
     member = models.ForeignKey(Member, null=True, on_delete=models.CASCADE)
     reservation_date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=choices.choices, default=choices.WAITING)
-    queue_order = models.IntegerField(blank=True, null=True) # ลำดับคิวการจองของหนังสือแต่ละเล่ม
             
-    def update_queue_all(self):
-        reservations = Reservation.objects.filter(status = self.choices.WAITING, book=self.book).order_by('-reservation_date')
-        count = 0
-        for r in reservations:
-            count += 1
-            r.queue_order = count
-            r.save()
-
-    def save(self, *args, **kwargs):
-        if not self.queue_order:
-            # หาลำดับถัดไปสำหรับหนังสือเล่มนี้
-            last_order = Reservation.objects.filter(
-                book=self.book, status=self.choices.WAITING
-            ).aggregate(
-                Max('queue_order')
-            )['queue_order__max']
-            
-            self.queue_order = (last_order or 0) + 1
-        super().save(*args, **kwargs)
+    def currrent_queue(self):
+        return Reservation.objects.filter(status = self.choices.WAITING, book=self.book, reservation_date__lt=self.reservation_date).count() + 1
 
     def __str__(self):
-        return f"{self.member.username} reserved {self.book.title} (Queue: {self.queue_order})"
+        return f"{self.member.username} reserved {self.book.title} (Queue: {self.currrent_queue})"
     
     class Meta:
         permissions = [

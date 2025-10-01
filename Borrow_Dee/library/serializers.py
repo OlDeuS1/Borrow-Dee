@@ -9,4 +9,4 @@ class BorrowSerializer(serializers.ModelSerializer):
 class ReservationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Reservation
-        fields = ['id', 'book', 'member', 'reservation_date', 'status', 'queue_order']
+        fields = ['id', 'book', 'member', 'reservation_date', 'status']

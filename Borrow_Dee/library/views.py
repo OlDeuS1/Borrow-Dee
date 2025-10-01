@@ -83,7 +83,6 @@ class ReservationDetail(APIView):
 
         if serializer.is_valid():
             serializer.save()
-            reservation.update_queue_all()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -221,7 +220,7 @@ class MyReservationsView(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = ["library.can_cancel_own_reservation", 'library.can_view_own_reservation', 'library.can_borrow_book']
     
     def get(self, request):
-        reservations = Reservation.objects.filter(member__username = request.user.username).exclude(status = 'completed')
+        reservations = Reservation.objects.filter(member__username = request.user.username).exclude(status = 'completed').order_by('-reservation_date')
         return render(request, 'myreservations.html', {"reservations": reservations})
     
 class DashboardView(View):
