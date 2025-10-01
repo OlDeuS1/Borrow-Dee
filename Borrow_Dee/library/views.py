@@ -352,12 +352,29 @@ class EditBookView(View):
             form.data = request.POST
             return render(request, "edit_book.html", {"form": form, "book": book})
 
+class BookDelete(View):
+    
+    def get(self, request, book_id):
+        book = get_object_or_404(Book, id=book_id)
+        book.delete()
+        return redirect('book_management')
+    
 class CategoryManagementView(View):
 
     def get(self, request):
+        search_query = request.GET.get('search', '')
+        categories = Category.objects.all()
+        if search_query:
+            categories = categories.filter(name__icontains=search_query)
+        category_total = categories.count()
 
-        return render(request, "category_management.html")
-    
+        context = {
+            "categories": categories.order_by('id'),
+            "category_total": category_total,
+            "search_query": search_query,
+        }
+        return render(request, "category_management.html", context)
+
 class LoanManagementView(View):
 
     def get(self, request):
@@ -381,13 +398,6 @@ class UserHistoryView(View):
     def get(self, request):
 
         return render(request, "user_history.html")
-
-class BookDelete(View):
-    
-    def get(self, request, book_id):
-        book = get_object_or_404(Book, id=book_id)
-        book.delete()
-        return redirect('book_management')
     
 # TomSelect Autocomplete Views
 class AuthorAutocompleteView(AutocompleteModelView):
