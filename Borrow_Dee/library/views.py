@@ -203,7 +203,8 @@ class BookDetailView(LoginRequiredMixin, PermissionRequiredMixin, View):
         book = Book.objects.annotate(avg_rating=Avg('rating__score', default=0)).get(id=book_id)
         borrowed = Borrow.objects.filter(Q(member__username = request.user.username), Q(book = book), ~Q(status = "returned")).exists()
         reserved = Reservation.objects.filter(member__username = request.user.username, book = book, status__in = ['ready', 'waiting']).exists()
-        return render(request, "bookDetail.html", {"book": book, "borrowed": borrowed, "reserved": reserved})
+        reviews = Rating.objects.filter(book = book)
+        return render(request, "bookDetail.html", {"book": book, "reviews": reviews, "borrowed": borrowed, "reserved": reserved})
 
 # MyBorrows page
 class MyBorrowsView(LoginRequiredMixin, PermissionRequiredMixin, View):

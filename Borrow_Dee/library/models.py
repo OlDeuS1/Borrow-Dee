@@ -101,6 +101,8 @@ class Rating(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     member = models.ForeignKey(Member, on_delete=models.CASCADE)
     score = models.IntegerField()
+    comment = models.TextField(blank=True, null=True)
+    create_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.member.username} rated {self.book.title} with {self.score} stars"

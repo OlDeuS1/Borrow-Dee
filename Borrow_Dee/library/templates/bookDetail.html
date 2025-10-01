@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="book-detail max-w-[80rem] w-full mx-auto flex gap-10 py-20 h-screen">
+    <div class="book-detail max-w-[80rem] w-full mx-auto flex gap-10 py-20">
         <img src="{% if book.image %}{{ book.image }}{% else %}{% static 'images/No_image_available.svg' %}{% endif %}" alt="{{ book.title }}" class="book-detail__img max-h-[30rem]">
         <div class="book-detail__content">
             <h1 class="text-[3.2rem]">{{ book.title }}</h1>
@@ -36,6 +36,36 @@
                 {% endif %}
             {% endif %}
         </div>
+    </div>
+    <div class="reviews max-w-[80rem] w-full mx-auto flex flex-col gap-8 pt-8 pb-20">
+        <div class="reviews__title text-[2.6rem] mb-4">
+            Reviews
+        </div>
+        {% if reviews.count %}
+            <div class="review__list flex flex-col gap-14">
+                {% for review in reviews %}
+                    <div class="review__item bg-[#403D39] text-white p-8 rounded-[2.5rem] shadow-xl flex flex-col gap-8">
+                        <div class="review__header flex items-center gap-4">
+                            <div class="user-icon rounded-[50%] border border-gray-500 p-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#fff" viewBox="0 0 256 256">
+                                    <path d="M230.92,212c-15.23-26.33-38.7-45.21-66.09-54.16a72,72,0,1,0-73.66,0C63.78,166.78,40.31,185.66,25.08,212a8,8,0,1,0,13.85,8c18.84-32.56,52.14-52,89.07-52s70.23,19.44,89.07,52a8,8,0,1,0,13.85-8ZM72,96a56,56,0,1,1,56,56A56.06,56.06,0,0,1,72,96Z"></path>
+                                </svg>
+                            </div>
+                            <div class="user-review">
+                                <div class="username flex gap-4 justify-center items-center">
+                                    {{ review.member }}
+                                    <div class="user-review__date text-[1.4rem]">• &nbsp;{{ review.create_at|date:"d F, Y" }}</div>
+                                </div>
+                                <div class="user-rating text-[1.4rem] text-[#E07A5F]">Rating : {{ review.score }}</div>
+                            </div>
+                        </div>
+                        <div class="review__comment bg-[#5D5953] px-5 pt-2 py-6 rounded-[1rem]">{% if review.comment %}{{ review.comment }}{% else %}<span class="text-gray-300">No comment.{% endif %}</span></div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="text-gray-500 text-center">No reviews yet.</div>
+        {% endif %}
     </div>
 {% endblock %}
 {% block script %} 
