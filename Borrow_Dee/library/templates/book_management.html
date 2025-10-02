@@ -12,7 +12,7 @@
 <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 mb-10">
     <h1 class="text-4xl font-bold text-white">Book Management</h1>
     <div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-        <form method="GET" class="relative flex-1 min-w-[260px]">
+        <form method="GET" action="{% url 'book_management' %}" class="relative flex-1 min-w-[260px]">
             <input name="search" id="search" value="{{ request.GET.search }}" type="text" placeholder="Search books..." class="search-input pr-12" />
             <button type="submit" class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">🔍</button>
         </form>
@@ -41,7 +41,7 @@
         <table class="min-w-full text-sm text-left">
             <thead class="text-gray-400 uppercase text-xs tracking-wider">
                 <tr class="border-b border-gray-600/40">
-                    <th class="py-3 px-4 font-medium">ID</th>
+                    <th class="py-3 px-4 font-medium">No.</th>
                     <th class="py-3 px-4 font-medium">Cover</th>
                     <th class="py-3 px-4 font-medium">Title</th>
                     <th class="py-3 px-4 font-medium">Authors</th>
