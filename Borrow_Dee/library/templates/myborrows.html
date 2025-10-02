@@ -49,4 +49,21 @@
         {% endif %}
       </div>
     </div>
+    <div class="confirm-modal-bg invisible h-screen backdrop-blur-[2px] w-full fixed top-0 left-0 z-20" style="background-color: rgba(0, 0, 0, 0.3);">
+      <div class="confirm-modal max-w-[40rem] w-full bg-[#403D39] p-8 rounded-[2rem] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white">
+        <div class="confirm-modal__title">Renew</div>
+        <div class="confirm-modal__content">
+          content for something
+        </div>
+        <div class="confirm-modal__action">
+          <button class="btn-cancle">Cancel</button>
+          <button class="btn-confirm cursor-pointer text-white bg-[#E07A5F] hover:bg-[#ba5e49] rounded-[3rem] shadow-xl transition-all">Confirm</button>
+        </div>
+        <div class="btn-close absolute -top-5 -right-5 bg-[#A9907E] p-2 rounded-[50%] cursor-pointer hover:bg-[#8c7869] transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#403D39" viewBox="0 0 256 256">
+            <path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
 {% endblock %}

@@ -71,7 +71,7 @@ class Borrow(models.Model):
     borrow_date = models.DateField(auto_now_add=True)
     due_date = models.DateField(blank=True, null=True)
     return_date = models.DateField(blank=True, null=True)
-    status = models.CharField(max_length=20, choices=choices.choices, default=choices.BORROWED)
+    status = models.CharField(max_length=20, choices=choices.choices, default=choices.PENDING)
     renew = models.BooleanField(default=False) # ใช้ boolean แทน int เพราะให้ต่ออายุได้ครั้งเดียว
 
     # ให้ due_date มีค่าเริ่มต้นเป็น borrow_date + กี่วัน
