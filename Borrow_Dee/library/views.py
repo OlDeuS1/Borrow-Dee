@@ -73,13 +73,8 @@ class ReservationDetail(APIView):
             raise Http404
 
     def patch(self, request, reserve_id, format=None):
-        try:
-            request.user = Member.objects.get(username = request.user.username)
-        except Member.DoesNotExist:
-            return Response({"error": "Member not found."}, status=status.HTTP_404_NOT_FOUND)
-        
         reservation = self.get_object(reserve_id)
-        serializer = ReservationSerializer(reservation, data=request.data)
+        serializer = ReservationSerializer(reservation, data=request.data, partial=True)
 
         if serializer.is_valid():
             serializer.save()
