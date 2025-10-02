@@ -61,6 +61,7 @@ class Member(models.Model):
 class Borrow(models.Model):
 
     class choices(models.TextChoices):
+        PENDING = 'pending', 'Pending'
         BORROWED = 'borrowed', 'Borrowed'
         RETURNED = 'returned', 'Returned'
         OVERDUE = 'overdue', 'Overdue'
