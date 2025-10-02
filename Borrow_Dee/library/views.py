@@ -397,6 +397,13 @@ class CategoryManagementView(View):
                 return redirect("category_management")
 
         return redirect("category_management")
+    
+class CategoryDelete(View):
+    
+    def get(self, request, category_id):
+        category = get_object_or_404(Category, id=category_id)
+        category.delete()
+        return redirect('category_management')
 
 class LoanManagementView(View):
 

@@ -55,7 +55,7 @@
             <tbody class="text-gray-200">
                 {% for book in books %}
                 <tr class="table-row border-b border-gray-700/40 last:border-none">
-                    <td class="px-4 py-3 align-top align-middle">{{ book.id }}</td>
+                    <td class="px-4 py-3 align-top align-middle">{{ forloop.counter }}</td>
                     <td class="my-borrows__data py-8 align-middle">
                         <img class="w-[6rem] h-[8rem] object-cover"
                             src="{% if book.image %}{{ book.image.url }}{% else %}{% static 'images/No_image_available.svg' %}{% endif %}"
