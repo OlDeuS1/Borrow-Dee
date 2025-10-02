@@ -96,7 +96,11 @@ class CategoryForm(ModelForm):
         model = Category
         fields = ['name']
         widgets = {
-            'name': TextInput(),
+            'name': TextInput(attrs={
+                'class': 'w-full bg-[#424242] border border-gray-600/40 rounded-[15px] px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#2C7852] focus:ring-2 focus:ring-[#2C7852]/20 transition-all',
+                'placeholder': 'Enter category name',
+                'required': True
+            }),
         }
 
 class LoginForm(AuthenticationForm):

@@ -357,18 +357,46 @@ class BookDelete(View):
 class CategoryManagementView(View):
 
     def get(self, request):
+        form = CategoryForm()
+        edit_form = CategoryForm()
         search_query = request.GET.get('search', '')
         categories = Category.objects.all()
         if search_query:
             categories = categories.filter(name__icontains=search_query)
         category_total = categories.count()
 
+        edit_id = request.GET.get('edit_id')
+        if edit_id:
+            edit_category = Category.objects.get(id=edit_id)
+            edit_form = CategoryForm(instance=edit_category)
+
         context = {
             "categories": categories.order_by('id'),
             "category_total": category_total,
             "search_query": search_query,
+            "form": form,
+            "edit_form": edit_form,
+            "edit_id": edit_id,
         }
         return render(request, "category_management.html", context)
+    
+    def post(self, request):
+        if 'edit_category' in request.POST:
+            category_id = request.POST.get('edit_category')
+            category = Category.objects.get(id=category_id)
+            form = CategoryForm(request.POST, instance=category)
+            if form.is_valid():
+                category = form.save()
+                print(f"Category '{category.name}' updated successfully")
+                return redirect("category_management")
+        else:
+            form = CategoryForm(request.POST)
+            if form.is_valid():
+                category = form.save()
+                print(f"Category '{category.name}' created successfully")
+                return redirect("category_management")
+
+        return redirect("category_management")
 
 class LoanManagementView(View):
 
