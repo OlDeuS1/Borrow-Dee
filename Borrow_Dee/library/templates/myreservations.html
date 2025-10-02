@@ -30,7 +30,7 @@
                     {% elif reserve.status == 'completed' or reserve.status == 'cancelled' %}
                       -
                     {% else %} 
-                      #{{ reserve.currrent_queue }}
+                      #{{ reserve.current_queue }}
                     {% endif %}
                   </div>
                 </td>
@@ -64,9 +64,9 @@
 {% endblock %}
 {% block script %}
     <script>
-      const handleCancelReservation = async function(e){
-        const reserve = e.target.dataset.reserve
-        const csrftoken = document.cookie.split('=').at(-1)
+      const handleCancelReservation = async function(reserveId){
+        const reserve = reserveId
+        const csrftoken = "{{ csrf_token }}"
         try {
           const res = await fetch(`http://127.0.0.1:8000/library/api/reservations/${reserve}/`, {
             method: "PATCH",
@@ -92,7 +92,7 @@
 
       if(document.querySelectorAll('.btn-cancel-reserve').length) {
         document.querySelectorAll('.btn-cancel-reserve').forEach(b => {
-          b.addEventListener('click', handleCancelReservation)
+          b.addEventListener('click', () => handleCancelReservation(b.dataset.reserve))
         })
       }
     </script>

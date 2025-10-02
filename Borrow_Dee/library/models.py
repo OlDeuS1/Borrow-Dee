@@ -120,7 +120,7 @@ class Reservation(models.Model):
     reservation_date = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=choices.choices, default=choices.WAITING)
             
-    def currrent_queue(self):
+    def current_queue(self):
         return Reservation.objects.filter(status = self.choices.WAITING, book=self.book, reservation_date__lt=self.reservation_date).count() + 1
 
     def __str__(self):

@@ -71,7 +71,7 @@
 {% block script %} 
     <script>
         const handleAction = async function(e){
-            const csrftoken = document.cookie.split('=').at(-1)
+            const csrftoken = "{{ csrf_token }}"
             const bodyData = {"book": Number(e.target.dataset.book)}
 
             try {

@@ -213,7 +213,7 @@ class MyBorrowsView(LoginRequiredMixin, PermissionRequiredMixin, View):
 # MyReservations page
 class MyReservationsView(LoginRequiredMixin, PermissionRequiredMixin, View):
     login_url = 'login'
-    permission_required = ["library.can_cancel_own_reservation", 'library.can_view_own_reservation', 'library.can_borrow_book']
+    permission_required = ["library.can_cancel_own_reservation", 'library.can_view_own_reservation']
     
     def get(self, request):
         reservations = Reservation.objects.filter(member__username = request.user.username).exclude(status = 'completed').order_by('-reservation_date')
