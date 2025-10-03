@@ -53,7 +53,7 @@
                         <td class="px-4 py-3 align-top"><span class="status-badge">{{ reserve.status }}</span></td>
                         <td class="px-4 py-3 align-top">
                             {% if reserve.status == 'ready' %}
-                            <a href="{% url 'update_borrow_status' reserve.id %}"
+                            <a href="{% url 'update_reservation_status' reserve.id %}"
                                 class="action-btn py-2 mx-auto text-white rounded-[3rem] max-w-[70%] bg-[#2C7852] font-medium text-xs block text-center">Approve</a>
                             {% else %}
                             <span class="text-gray-400 font-medium block text-center">No actions</span>

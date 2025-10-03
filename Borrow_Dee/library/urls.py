@@ -21,6 +21,7 @@ urlpatterns = [
     path("dashboard/loans/", views.LoanManagementView.as_view(), name="loan_management"),
     path('dashboard/loans/<int:borrow_id>/', views.UpdateBorrowStatusView.as_view(), name="update_borrow_status"),
     path("dashboard/reservations/", views.ReservationManagementView.as_view(), name="reservation_management"),
+    path('dashboard/reservations/<int:reserve_id>/', views.ReservationUpdate.as_view(), name="update_reservation_status"),
     path("dashboard/users/", views.UserManagementView.as_view(), name="user_management"),
     path("dashboard/users/<int:user_id>/history/", views.UserHistoryView.as_view(), name="user_history"),
 

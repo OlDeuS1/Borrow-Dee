@@ -456,6 +456,19 @@ class ReservationManagementView(View):
             "waiting_total": waiting_total,
         }
         return render(request, "reservation_management.html", context)
+    
+class ReservationUpdate(View):
+
+    def get(self, request, reserve_id):
+        reserve = get_object_or_404(Reservation, id=reserve_id)
+        reserve.status = 'completed'
+        reserve.save()
+        Borrow.objects.create(
+            book=reserve.book,
+            member=reserve.member,
+            status='borrowed',
+        )
+        return redirect("reservation_management")
 
 class UserManagementView(View):
 
