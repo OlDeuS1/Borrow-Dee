@@ -219,6 +219,16 @@ class MyReservationsView(LoginRequiredMixin, PermissionRequiredMixin, View):
         reservations = Reservation.objects.filter(member__username = request.user.username).exclude(status = 'completed').order_by('-reservation_date')
         return render(request, 'myreservations.html', {"reservations": reservations})
     
+class UpdateBorrowStatusView(View):
+    def get(self, request, borrow_id):
+        borrow = get_object_or_404(Borrow, id=borrow_id)
+        new_status = request.GET.get('status')
+
+        borrow.status = new_status
+        borrow.save()
+        print(f"Borrow {borrow_id} status updated to {new_status}")
+        return redirect('loan_management')
+    
 class DashboardView(View):
 
     def get(self, request):
@@ -409,8 +419,24 @@ class LoanManagementView(View):
 
     def get(self, request):
 
-        return render(request, "loan_management.html")
-    
+        loan_list = Borrow.objects.all()
+        search_query = request.GET.get('search', '')
+
+        if search_query:
+            loan_list = loan_list.filter(Q(member__username__icontains=search_query) | Q(book__title__icontains=search_query))
+
+        total_loans = Borrow.objects.count()
+        overdue_loans = Borrow.objects.filter(status='overdue').count()
+        returned_loans = Borrow.objects.filter(status='returned').count()
+        context = {
+            "loan_list": loan_list,
+            "search_query": search_query,
+            "total_loans": total_loans,
+            "overdue_loans": overdue_loans,
+            "returned_loans": returned_loans,
+        }
+        return render(request, "loan_management.html", context)
+
 class ReservationManagementView(View):
 
     def get(self, request):

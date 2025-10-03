@@ -19,6 +19,7 @@ urlpatterns = [
     path("dashboard/categories/", views.CategoryManagementView.as_view(), name="category_management"),
     path('dashboard/categories/delete/<int:category_id>/', views.CategoryDelete.as_view(), name="category-delete"),
     path("dashboard/loans/", views.LoanManagementView.as_view(), name="loan_management"),
+    path('dashboard/loans/<int:borrow_id>/', views.UpdateBorrowStatusView.as_view(), name="update_borrow_status"),
     path("dashboard/reservations/", views.ReservationManagementView.as_view(), name="reservation_management"),
     path("dashboard/users/", views.UserManagementView.as_view(), name="user_management"),
     path("dashboard/users/history/", views.UserHistoryView.as_view(), name="user_history"),
