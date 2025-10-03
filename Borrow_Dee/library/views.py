@@ -460,15 +460,29 @@ class ReservationManagementView(View):
 class UserManagementView(View):
 
     def get(self, request):
+        user_list = Member.objects.all()
+        search_query = request.GET.get('search', '')
+        if search_query:
+            user_list = user_list.filter(Q(username__icontains=search_query) | Q(email__icontains=search_query) | Q(phone_number__icontains=search_query))
 
-        return render(request, "user_management.html")
-    
+        context = {
+            "user_list": user_list,
+            "search_query": search_query,
+        }
+
+        return render(request, "user_management.html", context)
+
 class UserHistoryView(View):
 
-    def get(self, request):
+    def get(self, request, user_id):
+        search_query = request.GET.get('search', '')
+        member = get_object_or_404(Member, id=user_id)
+        borrows = Borrow.objects.filter(member=member, status="returned").order_by('-borrow_date')
+        if search_query:
+            borrows = borrows.filter(Q(book__title__icontains=search_query))
+        
+        return render(request, "user_history.html", {"user": member, "borrows": borrows, "search_query": search_query})
 
-        return render(request, "user_history.html")
-    
 # TomSelect Autocomplete Views
 class AuthorAutocompleteView(AutocompleteModelView):
     model = Author

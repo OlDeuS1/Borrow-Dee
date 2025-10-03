@@ -13,148 +13,54 @@
     </div>
     <div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
         <div class="relative flex-1 min-w-[260px]">
-            <input type="text" placeholder="Search users..." class="search-input pr-12" />
-            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+            <form action="{% url 'user_management' %}" method="GET">
+                <input type="text" name="search" placeholder="Search users..." value="{{ search_query }}" class="search-input pr-12" />
+                <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+            </form>
         </div>
-        <button class="view-more-btn px-8 py-3 text-white font-medium flex items-center justify-center gap-2">
-            <span class="text-lg leading-none">＋</span> Add User
-        </button>
     </div>
 </div>
 {% endblock %}
 
 {% block content %}
-<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-6 mb-10">
-    <div class="dashboard-card p-6">
-        <div class="text-4xl font-bold text-white mb-2">42</div>
-        <div class="text-sm text-gray-400">Total Users</div>
-    </div>
-    <div class="dashboard-card p-6">
-        <div class="text-4xl font-bold text-white mb-2 text-[#4CFFA6]">30</div>
-        <div class="text-sm text-gray-400">Active</div>
-    </div>
-    <div class="dashboard-card p-6">
-        <div class="text-4xl font-bold text-white mb-2 text-yellow-300">6</div>
-        <div class="text-sm text-gray-400">Pending Approval</div>
-    </div>
-    <div class="dashboard-card p-6">
-        <div class="text-4xl font-bold text-white mb-2 text-red-400">3</div>
-        <div class="text-sm text-gray-400">Suspended</div>
-    </div>
-    <div class="dashboard-card p-6">
-        <div class="text-4xl font-bold text-white mb-2">71%</div>
-        <div class="text-sm text-gray-400">Active Rate</div>
-    </div>
-</div>
-
 <div class="dashboard-card p-8">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 divider pb-4">
         <h2 class="text-2xl font-semibold text-white">Users List</h2>
         <div class="flex gap-2 text-sm text-gray-400">
-            <span><strong class="text-white">42</strong> total</span>
-            <span class="hidden sm:inline">•</span>
-            <span><strong class="text-[#4CFFA6]">30</strong> active</span>
-            <span class="hidden sm:inline">•</span>
-            <span><strong class="text-yellow-300">6</strong> pending</span>
+            <span><strong class="text-white">{{ user_list.count }}</strong> total</span>
         </div>
     </div>
     <div class="overflow-x-auto -mx-4 md:mx-0">
         <table class="min-w-full text-sm text-left">
             <thead class="text-gray-400 uppercase text-xs tracking-wider">
                 <tr class="border-b border-gray-600/40">
-                    <th class="py-3 px-4 font-medium">User</th>
+                    <th class="py-3 px-4 font-medium">No.</th>
+                    <th class="py-3 px-4 font-medium">Username</th>
                     <th class="py-3 px-4 font-medium">Email</th>
-                    <th class="py-3 px-4 font-medium">Role</th>
-                    <th class="py-3 px-4 font-medium">Status</th>
-                    <th class="py-3 px-4 font-medium">Joined</th>
-                    <th class="py-3 px-4 font-medium">Last Active</th>
-                    <th class="py-3 px-4 font-medium text-right">Actions</th>
+                    <th class="py-3 px-4 font-medium">Phone</th>
+                    <th class="py-3 px-4 font-medium">Address</th>
+                    <th class="py-3 px-4 font-medium text-center">Actions</th>
                 </tr>
             </thead>
             <tbody class="text-gray-200">
-                <!-- Sample static rows (replace with dynamic loop in future) -->
-                <tr class="table-row border-b border-gray-700/40 last:border-none">
-                    <td class="px-4 py-3 align-top">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-xs font-semibold">AD</div>
-                            <div>
-                                <div class="font-medium">admin</div>
-                                <div class="text-xs text-gray-400">Superuser</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-4 py-3 align-top">admin@example.com</td>
-                    <td class="px-4 py-3 align-top"><span class="status-badge" style="background:rgba(76,255,166,.15);color:#4CFFA6">Admin</span></td>
-                    <td class="px-4 py-3 align-top"><span class="status-badge status-available">Active</span></td>
-                    <td class="px-4 py-3 align-top">2024-01-10</td>
-                    <td class="px-4 py-3 align-top">Just now</td>
-                    <td class="px-4 py-3 align-top text-right whitespace-nowrap">
-                        <button class="action-btn text-white hover:brightness-125 mr-3" title="Edit">✏️</button>
-                        <button class="action-btn text-yellow-500 hover:text-yellow-400 mr-3" title="Suspend">⏸</button>
-                        <button class="action-btn text-red-500 hover:text-red-400" title="Delete">🗑️</button>
-                    </td>
-                </tr>
-                <tr class="table-row border-b border-gray-700/40 last:border-none">
-                    <td class="px-4 py-3 align-top">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-[#2C7852] flex items-center justify-center text-xs font-semibold">JM</div>
-                            <div>
-                                <div class="font-medium">jane_member</div>
-                                <div class="text-xs text-gray-400">Member</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-4 py-3 align-top">jane@example.com</td>
-                    <td class="px-4 py-3 align-top"><span class="status-badge" style="background:rgba(255,255,255,.15);color:#ffffff">Member</span></td>
-                    <td class="px-4 py-3 align-top"><span class="status-badge status-available">Active</span></td>
-                    <td class="px-4 py-3 align-top">2024-03-02</td>
-                    <td class="px-4 py-3 align-top">5 min ago</td>
-                    <td class="px-4 py-3 align-top text-right whitespace-nowrap">
-                        <button class="action-btn text-white hover:brightness-125 mr-3" title="Edit">✏️</button>
-                        <button class="action-btn text-yellow-500 hover:text-yellow-400 mr-3" title="Suspend">⏸</button>
-                        <button class="action-btn text-red-500 hover:text-red-400" title="Delete">🗑️</button>
-                    </td>
-                </tr>
-                <tr class="table-row border-b border-gray-700/40 last:border-none">
-                    <td class="px-4 py-3 align-top">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center text-xs font-semibold">NP</div>
-                            <div>
-                                <div class="font-medium">new_pending</div>
-                                <div class="text-xs text-gray-400">Member</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-4 py-3 align-top">pending@example.com</td>
-                    <td class="px-4 py-3 align-top"><span class="status-badge" style="background:rgba(255,255,255,.15);color:#ffffff">Member</span></td>
-                    <td class="px-4 py-3 align-top"><span class="status-badge" style="background:rgba(253,224,71,.15);color:#fde047">Pending</span></td>
-                    <td class="px-4 py-3 align-top">2024-04-18</td>
-                    <td class="px-4 py-3 align-top">—</td>
-                    <td class="px-4 py-3 align-top text-right whitespace-nowrap">
-                        <button class="action-btn text-[#4CFFA6] hover:brightness-110 mr-3" title="Approve">✅</button>
-                        <button class="action-btn text-red-500 hover:text-red-400" title="Delete">🗑️</button>
-                    </td>
-                </tr>
-                <tr class="table-row border-b border-gray-700/40 last:border-none">
-                    <td class="px-4 py-3 align-top">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center text-xs font-semibold">SB</div>
-                            <div>
-                                <div class="font-medium">suspended_user</div>
-                                <div class="text-xs text-gray-400">Member</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-4 py-3 align-top">sus@example.com</td>
-                    <td class="px-4 py-3 align-top"><span class="status-badge" style="background:rgba(255,255,255,.15);color:#ffffff">Member</span></td>
-                    <td class="px-4 py-3 align-top"><span class="status-badge" style="background:rgba(255,107,107,.15);color:#FF6B6B">Suspended</span></td>
-                    <td class="px-4 py-3 align-top">2023-11-04</td>
-                    <td class="px-4 py-3 align-top">2 days ago</td>
-                    <td class="px-4 py-3 align-top text-right whitespace-nowrap">
-                        <button class="action-btn text-[#4CFFA6] hover:brightness-110 mr-3" title="Reinstate">♻️</button>
-                        <button class="action-btn text-red-500 hover:text-red-400" title="Delete">🗑️</button>
-                    </td>
-                </tr>
+                {% if user_list.count > 0 %}
+                    {% for user in user_list %}
+                        <tr class="table-row border-b border-gray-700/40 last:border-none">
+                            <td class="px-4 py-3">{{ user.id }}</td>
+                            <td class="px-4 py-3">{{ user.username }}</td>
+                            <td class="px-4 py-3">{{ user.email }}</td>
+                            <td class="px-4 py-3">{{ user.phone_number }}</td>
+                            <td class="px-4 py-3">{{ user.address }}</td>
+                            <td class="px-4 py-3 align-top">
+                                <a href="{% url 'user_history' user.id %}" class="action-btn py-2 mx-auto text-white rounded-[3rem] max-w-[70%] bg-[#2C7852] font-medium text-xs block text-center" title="view_history">View history</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center text-gray-400 py-8">No users found.</td>
+                    </tr>
+                {% endif %}
             </tbody>
         </table>
     </div>

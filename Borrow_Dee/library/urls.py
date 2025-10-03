@@ -22,7 +22,7 @@ urlpatterns = [
     path('dashboard/loans/<int:borrow_id>/', views.UpdateBorrowStatusView.as_view(), name="update_borrow_status"),
     path("dashboard/reservations/", views.ReservationManagementView.as_view(), name="reservation_management"),
     path("dashboard/users/", views.UserManagementView.as_view(), name="user_management"),
-    path("dashboard/users/history/", views.UserHistoryView.as_view(), name="user_history"),
+    path("dashboard/users/<int:user_id>/history/", views.UserHistoryView.as_view(), name="user_history"),
 
     # API
     path('api/borrows/', views.BorrowList.as_view(), name="borrow-list"),
