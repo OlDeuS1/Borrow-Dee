@@ -425,9 +425,9 @@ class LoanManagementView(View):
         if search_query:
             loan_list = loan_list.filter(Q(member__username__icontains=search_query) | Q(book__title__icontains=search_query))
 
-        total_loans = Borrow.objects.count()
-        overdue_loans = Borrow.objects.filter(status='overdue').count()
-        returned_loans = Borrow.objects.filter(status='returned').count()
+        total_loans = loan_list.count()
+        overdue_loans = loan_list.filter(status='overdue').count()
+        returned_loans = loan_list.filter(status='returned').count()
         context = {
             "loan_list": loan_list,
             "search_query": search_query,
@@ -443,12 +443,12 @@ class ReservationManagementView(View):
 
         reserve_list = Reservation.objects.all()
         search_query = request.GET.get('search', '')
-        reserve_total = reserve_list.count()
-        waiting_total = reserve_list.filter(status='waiting').count()
 
         if search_query:
             reserve_list = reserve_list.filter(Q(member__username__icontains=search_query) | Q(book__title__icontains=search_query))
 
+        reserve_total = reserve_list.count()
+        waiting_total = reserve_list.filter(status='waiting').count()
         context = {
             "reserve_list": reserve_list,
             "search_query": search_query,
