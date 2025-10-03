@@ -35,9 +35,6 @@
         </div>
     </div>
     <div class="overflow-x-auto -mx-4 md:mx-0">
-        {% if books|length == 0 %}
-            <p class="text-center text-white/75 py-8">No books available.</p>
-        {% else %}
         <table class="min-w-full text-sm text-left">
             <thead class="text-gray-400 uppercase text-xs tracking-wider">
                 <tr class="border-b border-gray-600/40">
@@ -53,8 +50,9 @@
                 </tr>
             </thead>
             <tbody class="text-gray-200">
-                {% for book in books %}
-                <tr class="table-row border-b border-gray-700/40 last:border-none">
+                {% if books|length > 0 %}
+                    {% for book in books %}
+                    <tr class="table-row border-b border-gray-700/40 last:border-none">
                     <td class="px-4 py-3 align-top align-middle">{{ forloop.counter }}</td>
                     <td class="my-borrows__data py-8 align-middle">
                         <img class="w-[6rem] h-[8rem] object-cover"
@@ -95,9 +93,13 @@
                     </td>
                 </tr>
                 {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="9" class="text-center text-gray-400 py-8">No books found.</td>
+            </tr>
+            {% endif %}
             </tbody>
         </table>
-        {% endif %}
     </div>
 </div>
 

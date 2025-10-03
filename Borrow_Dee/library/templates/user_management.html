@@ -46,7 +46,7 @@
                 {% if user_list.count > 0 %}
                     {% for user in user_list %}
                         <tr class="table-row border-b border-gray-700/40 last:border-none">
-                            <td class="px-4 py-3">{{ user.id }}</td>
+                            <td class="px-4 py-3">{{ forloop.counter }}</td>
                             <td class="px-4 py-3">{{ user.username }}</td>
                             <td class="px-4 py-3">{{ user.email }}</td>
                             <td class="px-4 py-3">{{ user.phone_number }}</td>

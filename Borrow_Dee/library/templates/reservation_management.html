@@ -31,9 +31,6 @@
         </div>
     </div>
     <div class="overflow-x-auto -mx-4 md:mx-0">
-        {% if reserve_list|length == 0 %}
-            <p class="text-center text-white/75 py-8">No reservations available.</p>
-        {% else %}
         <table class="min-w-full text-sm text-left">
             <thead class="text-gray-400 uppercase text-xs tracking-wider">
                 <tr class="border-b border-gray-600/40">
@@ -46,22 +43,27 @@
                 </tr>
             </thead>
             <tbody class="text-gray-200">
-                {% for reserve in reserve_list %}
-                <tr class="table-row border-b border-gray-700/40 last:border-none">
-                    <td class="px-4 py-3 align-top">{{ forloop.counter }}</td>
-                    <td class="px-4 py-3 align-top">{{ reserve.member.username }}</td>
-                    <td class="px-4 py-3 align-top font-semibold">{{ reserve.book.title }}</td>
-                    <td class="px-4 py-3 align-top">{{ reserve.reservation_date }}</td>
-                    <td class="px-4 py-3 align-top"><span class="status-badge">{{ reserve.status }}</span></td>
-                    <td class="px-4 py-3 align-top text-right whitespace-nowrap">
-                        <button class="action-btn text-[#4CFFA6] hover:brightness-110 mr-3" title="Approve">✔</button>
-                        <button class="action-btn text-red-500 hover:text-red-400" title="Cancel">🗑️</button>
-                    </td>
+                {% if reserve_list|length > 0 %}
+                    {% for reserve in reserve_list %}
+                    <tr class="table-row border-b border-gray-700/40 last:border-none">
+                        <td class="px-4 py-3 align-top">{{ forloop.counter }}</td>
+                        <td class="px-4 py-3 align-top">{{ reserve.member.username }}</td>
+                        <td class="px-4 py-3 align-top font-semibold">{{ reserve.book.title }}</td>
+                        <td class="px-4 py-3 align-top">{{ reserve.reservation_date }}</td>
+                        <td class="px-4 py-3 align-top"><span class="status-badge">{{ reserve.status }}</span></td>
+                        <td class="px-4 py-3 align-top text-right whitespace-nowrap">
+                            <button class="action-btn text-[#4CFFA6] hover:brightness-110 mr-3" title="Approve">✔</button>
+                            <button class="action-btn text-red-500 hover:text-red-400" title="Cancel">🗑️</button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center text-gray-400 py-8">No reservations found.</td>
                 </tr>
-                {% endfor %}
+                {% endif %}
             </tbody>
         </table>
-        {% endif %}
     </div>
 </div>
 
