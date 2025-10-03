@@ -441,7 +441,21 @@ class ReservationManagementView(View):
 
     def get(self, request):
 
-        return render(request, "reservation_management.html")
+        reserve_list = Reservation.objects.all()
+        search_query = request.GET.get('search', '')
+        reserve_total = reserve_list.count()
+        waiting_total = reserve_list.filter(status='waiting').count()
+
+        if search_query:
+            reserve_list = reserve_list.filter(Q(member__username__icontains=search_query) | Q(book__title__icontains=search_query))
+
+        context = {
+            "reserve_list": reserve_list,
+            "search_query": search_query,
+            "reserve_total": reserve_total,
+            "waiting_total": waiting_total,
+        }
+        return render(request, "reservation_management.html", context)
 
 class UserManagementView(View):
 

@@ -11,135 +11,57 @@
         <h1 class="text-4xl font-bold text-white mb-4 lg:mb-2">Reservation Management</h1>
     </div>
     <div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-        <div class="relative flex-1 min-w-[260px]">
-            <input type="text" placeholder="Search user/book..." class="search-input pr-12" />
-            <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
-        </div>
-        <button class="view-more-btn px-8 py-3 text-white font-medium flex items-center justify-center gap-2">
-            <span class="text-lg leading-none">＋</span> New Reservation
-        </button>
+        <form action="{% url 'reservation_management' %}" method="GET" class="relative flex-1 min-w-[260px]">
+        <input type="text" name="search" value="{{ search_query }}" placeholder="Search user/book..."
+            class="search-input pr-12" />
+        <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">🔍</span>
+    </form>
     </div>
 </div>
 {% endblock %}
 {% block content %}
-<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-10">
-    <div class="dashboard-card p-6">
-        <div class="text-4xl font-bold text-white mb-2">210</div>
-        <div class="text-sm text-gray-400">Total Reservations</div>
-    </div>
-    <div class="dashboard-card p-6">
-        <div class="text-4xl font-bold text-white mb-2 text-yellow-300">18</div>
-        <div class="text-sm text-gray-400">Pending</div>
-    </div>
-    <div class="dashboard-card p-6">
-        <div class="text-4xl font-bold text-white mb-2 text-[#4CFFA6]">9</div>
-        <div class="text-sm text-gray-400">Approved Today</div>
-    </div>
-    <div class="dashboard-card p-6">
-        <div class="text-4xl font-bold text-white mb-2 text-[#FF6B6B]">4</div>
-        <div class="text-sm text-gray-400">Expiring Soon</div>
-    </div>
-</div>
 
 <div class="dashboard-card p-8">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 divider pb-4">
         <h2 class="text-2xl font-semibold text-white">Reservations List</h2>
         <div class="flex gap-2 text-sm text-gray-400">
-            <span><strong class="text-white">210</strong> total</span>
+            <span><strong class="text-white">{{ reserve_total }}</strong> total</span>
             <span class="hidden sm:inline">•</span>
-            <span><strong class="text-yellow-300">18</strong> pending</span>
-            <span class="hidden sm:inline">•</span>
-            <span><strong class="text-[#FF6B6B]">4</strong> expiring soon</span>
+            <span><strong class="text-yellow-300">{{ waiting_total }}</strong> waiting</span>
         </div>
     </div>
     <div class="overflow-x-auto -mx-4 md:mx-0">
+        {% if reserve_list|length == 0 %}
+            <p class="text-center text-white/75 py-8">No reservations available.</p>
+        {% else %}
         <table class="min-w-full text-sm text-left">
             <thead class="text-gray-400 uppercase text-xs tracking-wider">
                 <tr class="border-b border-gray-600/40">
-                    <th class="py-3 px-4 font-medium">ID</th>
+                    <th class="py-3 px-4 font-medium">No.</th>
                     <th class="py-3 px-4 font-medium">User</th>
                     <th class="py-3 px-4 font-medium">Book</th>
                     <th class="py-3 px-4 font-medium">Reserved On</th>
-                    <th class="py-3 px-4 font-medium">Expires On</th>
                     <th class="py-3 px-4 font-medium">Status</th>
                     <th class="py-3 px-4 font-medium text-right">Actions</th>
                 </tr>
             </thead>
             <tbody class="text-gray-200">
+                {% for reserve in reserve_list %}
                 <tr class="table-row border-b border-gray-700/40 last:border-none">
-                    <td class="px-4 py-3 align-top">501</td>
-                    <td class="px-4 py-3 align-top">Alice Tan</td>
-                    <td class="px-4 py-3 align-top font-semibold">The Quantum Path</td>
-                    <td class="px-4 py-3 align-top">2025-09-21 10:15</td>
-                    <td class="px-4 py-3 align-top">2025-09-24</td>
-                    <td class="px-4 py-3 align-top"><span class="status-badge" style="background:rgba(253,224,71,.15);color:#fde047">Pending</span></td>
+                    <td class="px-4 py-3 align-top">{{ forloop.counter }}</td>
+                    <td class="px-4 py-3 align-top">{{ reserve.member.username }}</td>
+                    <td class="px-4 py-3 align-top font-semibold">{{ reserve.book.title }}</td>
+                    <td class="px-4 py-3 align-top">{{ reserve.reservation_date }}</td>
+                    <td class="px-4 py-3 align-top"><span class="status-badge">{{ reserve.status }}</span></td>
                     <td class="px-4 py-3 align-top text-right whitespace-nowrap">
                         <button class="action-btn text-[#4CFFA6] hover:brightness-110 mr-3" title="Approve">✔</button>
                         <button class="action-btn text-red-500 hover:text-red-400" title="Cancel">🗑️</button>
                     </td>
                 </tr>
-                <tr class="table-row border-b border-gray-700/40 last:border-none">
-                    <td class="px-4 py-3 align-top">502</td>
-                    <td class="px-4 py-3 align-top">Michael Lee</td>
-                    <td class="px-4 py-3 align-top font-semibold">Ocean of Stars</td>
-                    <td class="px-4 py-3 align-top">2025-09-21 09:40</td>
-                    <td class="px-4 py-3 align-top">2025-09-24</td>
-                    <td class="px-4 py-3 align-top"><span class="status-badge status-available">Approved</span></td>
-                    <td class="px-4 py-3 align-top text-right whitespace-nowrap">
-                        <button class="action-btn text-white hover:brightness-125 mr-3" title="Mark Collected">📦</button>
-                        <button class="action-btn text-red-500 hover:text-red-400" title="Cancel">🗑️</button>
-                    </td>
-                </tr>
-                <tr class="table-row border-b border-gray-700/40 last:border-none">
-                    <td class="px-4 py-3 align-top">503</td>
-                    <td class="px-4 py-3 align-top">Sara Kim</td>
-                    <td class="px-4 py-3 align-top font-semibold">Hidden Forest</td>
-                    <td class="px-4 py-3 align-top">2025-09-20 16:02</td>
-                    <td class="px-4 py-3 align-top">2025-09-23</td>
-                    <td class="px-4 py-3 align-top"><span class="status-badge" style="background:rgba(255,200,0,.15);color:#F8D347">Expiring</span></td>
-                    <td class="px-4 py-3 align-top text-right whitespace-nowrap">
-                        <button class="action-btn text-[#4CFFA6] hover:brightness-110 mr-3" title="Approve" disabled style="opacity:.4;cursor:not-allowed">✔</button>
-                        <button class="action-btn text-white hover:brightness-125 mr-3" title="Mark Collected">📦</button>
-                        <button class="action-btn text-red-500 hover:text-red-400" title="Cancel">🗑️</button>
-                    </td>
-                </tr>
-                <tr class="table-row border-b border-gray-700/40 last:border-none">
-                    <td class="px-4 py-3 align-top">504</td>
-                        <td class="px-4 py-3 align-top">David Wu</td>
-                        <td class="px-4 py-3 align-top font-semibold">Machine Minds</td>
-                        <td class="px-4 py-3 align-top">2025-09-19 11:30</td>
-                        <td class="px-4 py-3 align-top">2025-09-22</td>
-                        <td class="px-4 py-3 align-top"><span class="status-badge" style="background:rgba(255,76,76,.15);color:#FF6B6B">Cancelled</span></td>
-                        <td class="px-4 py-3 align-top text-right whitespace-nowrap">
-                            <button class="action-btn text-[#4CFFA6] hover:brightness-110 mr-3" title="Re-Approve" disabled style="opacity:.4;cursor:not-allowed">✔</button>
-                            <button class="action-btn text-white hover:brightness-125 mr-3" title="Mark Collected" disabled style="opacity:.4;cursor:not-allowed">📦</button>
-                            <button class="action-btn text-red-500 hover:text-red-400" title="Delete">🗑️</button>
-                        </td>
-                </tr>
-                <tr class="table-row border-b border-gray-700/40 last:border-none">
-                    <td class="px-4 py-3 align-top">505</td>
-                    <td class="px-4 py-3 align-top">Nadia Chen</td>
-                    <td class="px-4 py-3 align-top font-semibold">Solar Reborn</td>
-                    <td class="px-4 py-3 align-top">2025-09-18 14:05</td>
-                    <td class="px-4 py-3 align-top">2025-09-21</td>
-                    <td class="px-4 py-3 align-top"><span class="status-badge" style="background:rgba(76,255,166,.15);color:#4CFFA6">Collected</span></td>
-                    <td class="px-4 py-3 align-top text-right whitespace-nowrap">
-                        <button class="action-btn text-red-500 hover:text-red-400" title="Delete">🗑️</button>
-                    </td>
-                </tr>
-                <tr class="table-row border-b border-gray-700/40 last:border-none">
-                    <td class="px-4 py-3 align-top">506</td>
-                    <td class="px-4 py-3 align-top">Liam Park</td>
-                    <td class="px-4 py-3 align-top font-semibold">Edge of Nebula</td>
-                    <td class="px-4 py-3 align-top">2025-09-16 09:12</td>
-                    <td class="px-4 py-3 align-top">2025-09-19</td>
-                    <td class="px-4 py-3 align-top"><span class="status-badge" style="background:rgba(255,76,76,.15);color:#FF6B6B">Expired</span></td>
-                    <td class="px-4 py-3 align-top text-right whitespace-nowrap">
-                        <button class="action-btn text-red-500 hover:text-red-400" title="Delete">🗑️</button>
-                    </td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
+        {% endif %}
     </div>
 </div>
 
