@@ -497,12 +497,16 @@ class UserHistoryView(View):
         return render(request, "user_history.html", {"user": member, "borrows": borrows, "search_query": search_query})
 
 # TomSelect Autocomplete Views
-class AuthorAutocompleteView(AutocompleteModelView):
+class AuthorAutocompleteView(AutocompleteModelView, LoginRequiredMixin, PermissionRequiredMixin):
+    login_url = 'login'
+    permission_required = ['library.view_author', 'library.add_author', 'library.add_book', 'library.change_book']
     model = Author
     search_lookups = ['name__icontains']
     value_field = 'name'
 
-class CategoryAutocompleteView(AutocompleteModelView):
+class CategoryAutocompleteView(AutocompleteModelView, LoginRequiredMixin, PermissionRequiredMixin):
+    login_url = 'login'
+    permission_required = ['library.view_category', 'library.add_category', 'library.add_book', 'library.change_book']
     model = Category
     search_lookups = ['name__icontains']
     value_field = 'name'
