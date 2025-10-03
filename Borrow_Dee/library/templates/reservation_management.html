@@ -39,7 +39,7 @@
                     <th class="py-3 px-4 font-medium">Book</th>
                     <th class="py-3 px-4 font-medium">Reserved On</th>
                     <th class="py-3 px-4 font-medium">Status</th>
-                    <th class="py-3 px-4 font-medium text-right">Actions</th>
+                    <th class="py-3 px-4 font-medium text-center">Actions</th>
                 </tr>
             </thead>
             <tbody class="text-gray-200">
@@ -51,9 +51,13 @@
                         <td class="px-4 py-3 align-top font-semibold">{{ reserve.book.title }}</td>
                         <td class="px-4 py-3 align-top">{{ reserve.reservation_date }}</td>
                         <td class="px-4 py-3 align-top"><span class="status-badge">{{ reserve.status }}</span></td>
-                        <td class="px-4 py-3 align-top text-right whitespace-nowrap">
-                            <button class="action-btn text-[#4CFFA6] hover:brightness-110 mr-3" title="Approve">✔</button>
-                            <button class="action-btn text-red-500 hover:text-red-400" title="Cancel">🗑️</button>
+                        <td class="px-4 py-3 align-top">
+                            {% if reserve.status == 'ready' %}
+                            <a href="{% url 'update_borrow_status' reserve.id %}"
+                                class="action-btn py-2 mx-auto text-white rounded-[3rem] max-w-[70%] bg-[#2C7852] font-medium text-xs block text-center">Approve</a>
+                            {% else %}
+                            <span class="text-gray-400 font-medium block text-center">No actions</span>
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}

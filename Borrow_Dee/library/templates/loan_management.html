@@ -42,7 +42,7 @@
           <th class="py-3 px-4 font-medium">Loan Date</th>
           <th class="py-3 px-4 font-medium">Due Date</th>
           <th class="py-3 px-4 font-medium">Status</th>
-          <th class="py-3 px-4 font-medium text-center w-32">Actions</th>
+          <th class="py-3 px-4 font-medium text-center">Actions</th>
         </tr>
       </thead>
       <tbody class="text-gray-200">
@@ -65,15 +65,15 @@
                 <span class="status-badge status-pending" style="background:rgba(255,200,0,.15);color:#F8D347">{{ loan.status }}</span>
               {% endif %}
             </td> 
-            <td class="py-3 px-4 text-center w-32">
+            <td class="px-4 py-3 align-top">
               {% if loan.status == 'returned' %}
-                <span class="text-gray-400">No actions</span>
+                <span class="text-gray-400 font-medium block text-center">No actions</span>
               {% elif loan.status == 'pending' %}
                 <a href="{% url 'update_borrow_status' loan.id %}?status=borrowed"
-                   class="view-more-btn w-full py-2 text-white font-medium text-xs block text-center">Approve</a>
+                   class="action-btn py-2 mx-auto text-white rounded-[3rem] max-w-[70%] bg-[#2C7852] font-medium text-xs block text-center">Approve</a>
               {% else %}
                 <a href="{% url 'update_borrow_status' loan.id %}?status=returned"
-                   class="view-more-btn w-full py-2 text-white font-medium text-xs block text-center">Receive Book</a>
+                   class="action-btn py-2 mx-auto text-white rounded-[3rem] max-w-[70%] bg-[#2C7852] font-medium text-xs block text-center">Receive</a>
               {% endif %}
             </td>
           {% endfor %}

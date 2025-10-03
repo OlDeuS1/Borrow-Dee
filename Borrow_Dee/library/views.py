@@ -429,7 +429,7 @@ class LoanManagementView(View):
         overdue_loans = loan_list.filter(status='overdue').count()
         returned_loans = loan_list.filter(status='returned').count()
         context = {
-            "loan_list": loan_list,
+            "loan_list": loan_list.order_by('-borrow_date'),
             "search_query": search_query,
             "total_loans": total_loans,
             "overdue_loans": overdue_loans,
@@ -450,7 +450,7 @@ class ReservationManagementView(View):
         reserve_total = reserve_list.count()
         waiting_total = reserve_list.filter(status='waiting').count()
         context = {
-            "reserve_list": reserve_list,
+            "reserve_list": reserve_list.order_by('-reservation_date'),
             "search_query": search_query,
             "reserve_total": reserve_total,
             "waiting_total": waiting_total,
