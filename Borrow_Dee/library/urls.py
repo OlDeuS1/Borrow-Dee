@@ -11,17 +11,29 @@ urlpatterns = [
     path("books/<int:book_id>/", views.BookDetailView.as_view(), name="book_detail"),
     path("myborrows/", views.MyBorrowsView.as_view(), name="myborrows"),
     path("myreservations/", views.MyReservationsView.as_view(), name="myreservations"),
+
+    # Dashboard
     path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
+
+    # book management
     path("dashboard/books/", views.BookManagementView.as_view(), name="book_management"),
     path("dashboard/books/add/", views.AddBookView.as_view(), name="add_book"),
     path("dashboard/books/edit/<int:book_id>/", views.EditBookView.as_view(), name="edit_book"),
     path('dashboard/books/delete/<int:book_id>/', views.BookDelete.as_view(), name="book-delete"),
+
+    # category management
     path("dashboard/categories/", views.CategoryManagementView.as_view(), name="category_management"),
     path('dashboard/categories/delete/<int:category_id>/', views.CategoryDelete.as_view(), name="category-delete"),
+
+    # loan management
     path("dashboard/loans/", views.LoanManagementView.as_view(), name="loan_management"),
     path('dashboard/loans/<int:borrow_id>/', views.UpdateBorrowStatusView.as_view(), name="update_borrow_status"),
+
+    # reservation management
     path("dashboard/reservations/", views.ReservationManagementView.as_view(), name="reservation_management"),
     path('dashboard/reservations/<int:reserve_id>/', views.ReservationUpdate.as_view(), name="update_reservation_status"),
+
+    # user management
     path("dashboard/users/", views.UserManagementView.as_view(), name="user_management"),
     path("dashboard/users/<int:user_id>/history/", views.UserHistoryView.as_view(), name="user_history"),
 

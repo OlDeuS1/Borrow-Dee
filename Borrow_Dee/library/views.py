@@ -219,16 +219,7 @@ class MyReservationsView(LoginRequiredMixin, PermissionRequiredMixin, View):
         reservations = Reservation.objects.filter(member__username = request.user.username).exclude(status = 'completed').order_by('-reservation_date')
         return render(request, 'myreservations.html', {"reservations": reservations})
     
-class UpdateBorrowStatusView(View):
-    def get(self, request, borrow_id):
-        borrow = get_object_or_404(Borrow, id=borrow_id)
-        new_status = request.GET.get('status')
-
-        borrow.status = new_status
-        borrow.save()
-        print(f"Borrow {borrow_id} status updated to {new_status}")
-        return redirect('loan_management')
-    
+# Dashboard View
 class DashboardView(View):
 
     def get(self, request):
@@ -246,6 +237,7 @@ class DashboardView(View):
         }
         return render(request, "dashboard.html", context)
 
+# Book Management Views
 class BookManagementView(View):
 
     def get(self, request):
@@ -363,7 +355,8 @@ class BookDelete(View):
         book = get_object_or_404(Book, id=book_id)
         book.delete()
         return redirect('book_management')
-    
+
+# Category Management Views
 class CategoryManagementView(View):
 
     def get(self, request):
@@ -415,6 +408,7 @@ class CategoryDelete(View):
         category.delete()
         return redirect('category_management')
 
+# Loan Management View
 class LoanManagementView(View):
 
     def get(self, request):
@@ -436,7 +430,18 @@ class LoanManagementView(View):
             "returned_loans": returned_loans,
         }
         return render(request, "loan_management.html", context)
+    
+class UpdateBorrowStatusView(View):
+    def get(self, request, borrow_id):
+        borrow = get_object_or_404(Borrow, id=borrow_id)
+        new_status = request.GET.get('status')
 
+        borrow.status = new_status
+        borrow.save()
+        print(f"Borrow {borrow_id} status updated to {new_status}")
+        return redirect('loan_management')
+
+# Reservation Management View
 class ReservationManagementView(View):
 
     def get(self, request):
@@ -469,7 +474,8 @@ class ReservationUpdate(View):
             status='borrowed',
         )
         return redirect("reservation_management")
-
+    
+# User Management View
 class UserManagementView(View):
 
     def get(self, request):
