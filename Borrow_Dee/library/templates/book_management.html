@@ -29,9 +29,9 @@
         <div class="flex gap-2 text-sm text-gray-400">
             <span><strong class="text-white">{{ book_total }}</strong> total</span>
             <span class="hidden sm:inline">•</span>
-            <span><strong class="text-[#4CFFA6]">1</strong> available</span>
+            <span><strong class="text-[#4CFFA6]">{{ available_books }}</strong> available</span>
             <span class="hidden sm:inline">•</span>
-            <span><strong class="text-[#FF6B6B]">1</strong> borrowed</span>
+            <span><strong class="text-[#FF6B6B]">{{ unavailable_books }}</strong> unavailable</span>
         </div>
     </div>
     <div class="overflow-x-auto -mx-4 md:mx-0">
@@ -77,7 +77,7 @@
                     <td class="px-4 py-3 align-middle">{{ book.isbn_number }}</td>
                     <td class="px-4 py-3 align-top align-middle">{{ book.amount }}</td>
                     <td class="px-4 py-3 align-top align-middle">
-                        {% if book.amount > 0 %}
+                        {% if book.available_count > 0 %}
                             <span class="status-badge status-available">Available</span>
                         {% else %}
                             <span class="status-badge status-borrowed">Unavailable</span>

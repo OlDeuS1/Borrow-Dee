@@ -242,15 +242,22 @@ class BookManagementView(View):
 
     def get(self, request):
         search_query = request.GET.get('search', '')
-        books = Book.objects.all()
+        books = Book.objects.annotate(
+            available_count=F('amount') - Count('borrow', filter=Q(borrow__status__in=['borrowed', 'overdue']))
+        )
         if search_query:
             books = books.filter(title__icontains=search_query)
         book_total = books.count()
         
+        available_books = books.filter(available_count__gt=0).count()
+        unavailable_books = book_total - available_books
+
         context = {
             "books": books.order_by('id'),
             "book_total": book_total,
             "search_query": search_query,
+            "available_books": available_books,
+            "unavailable_books": unavailable_books,
         }
         return render(request, "book_management.html", context)
 
