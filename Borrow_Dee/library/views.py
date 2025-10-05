@@ -42,13 +42,14 @@ class BorrowDetail(APIView):
         except Borrow.DoesNotExist:
             raise Http404
 
-    def get(self, request, borrow_id, format=None):
+    def patch(self, request, borrow_id, format=None):
         borrow = self.get_object(borrow_id)
-        serializer = BorrowSerializer(borrow)
-        return Response(serializer.data)
-    # def put(self, request):
-        
-    # def delete(self, request):
+        serializer = BorrowSerializer(borrow, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # api/reservations/
 class ReservationList(APIView):

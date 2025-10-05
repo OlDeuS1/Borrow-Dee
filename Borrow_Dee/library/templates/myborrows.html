@@ -35,10 +35,10 @@
                   <div class="text-gray-500 text-[1.4rem] {% if borrow.status == 'overdue' %}text-red-500{% endif%}">{{ borrow.status }}</div>
                 </td>
                 <td class="my-borrows__data py-8 text-center">
-                  {% if borrow.status != 'borrowed' %}
+                  {% if borrow.status != 'borrowed' or borrow.renew %}
                     <button disabled class="btn-dis-renew inline-block text-white px-8 py-3 rounded-[3rem] bg-gray-500 transition-all shadow-xl">Renew</button>
                   {% else %}
-                    <button class="btn-renew inline-block cursor-pointer text-white px-8 py-3 rounded-[3rem] bg-[#E07A5F] transition-all hover:bg-[#ba5e49] shadow-xl">Renew</button>
+                    <button data-borrow="{{ borrow.id }}" data-borrow-book="{{ borrow.book.title }}" data-borrow-duedate="{{ borrow.due_date|date:"c" }}" class="btn-renew inline-block cursor-pointer text-white px-8 py-3 rounded-[3rem] bg-[#E07A5F] transition-all hover:bg-[#ba5e49] shadow-xl">Renew</button>
                   {% endif %}
                 </td>
               </tr>
@@ -49,15 +49,15 @@
         {% endif %}
       </div>
     </div>
-    <div class="confirm-modal-bg invisible h-screen backdrop-blur-[2px] w-full fixed top-0 left-0 z-20" style="background-color: rgba(0, 0, 0, 0.3);">
-      <div class="confirm-modal max-w-[40rem] w-full bg-[#403D39] p-8 rounded-[2rem] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white">
-        <div class="confirm-modal__title">Renew</div>
-        <div class="confirm-modal__content">
+    <div class="confirm-modal-bg invisible opacity-0 transition-all h-screen backdrop-blur-[2px] w-full fixed top-0 left-0 z-20" style="background-color: rgba(0, 0, 0, 0.3);">
+      <div class="confirm-modal max-w-[40rem] w-full bg-[#403D39] flex flex-col gap-6 p-8 rounded-[2rem] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white">
+        <div class="confirm-modal__title text-[2.4rem] text-center mb-2">Renew</div>
+        <div class="confirm-modal__content px-8 flex flex-col gap-2">
           content for something
         </div>
-        <div class="confirm-modal__action">
-          <button class="btn-cancle">Cancel</button>
-          <button class="btn-confirm cursor-pointer text-white bg-[#E07A5F] hover:bg-[#ba5e49] rounded-[3rem] shadow-xl transition-all">Confirm</button>
+        <div class="confirm-modal__action ml-auto mt-8">
+          <button class="btn-cancle py-2 px-8 border border-gray-500 rounded-[3rem] mr-3 cursor-pointer hover:border-gray-400 transition-all">Cancel</button>
+          <button class="btn-confirm cursor-pointer font-semibold py-2 px-8 text-white bg-[#E07A5F] hover:bg-[#ba5e49] rounded-[3rem] shadow-xl transition-all">Confirm</ิ>
         </div>
         <div class="btn-close absolute -top-5 -right-5 bg-[#A9907E] p-2 rounded-[50%] cursor-pointer hover:bg-[#8c7869] transition-all">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#403D39" viewBox="0 0 256 256">
@@ -66,4 +66,86 @@
         </div>
       </div>
     </div>
+{% endblock %}
+{% block script %}
+    <script>
+      const btnRenews = document.querySelectorAll('.btn-renew')
+      const confirmModalBg = document.querySelector('.confirm-modal-bg')
+      const confirmModal = document.querySelector('.confirm-modal')
+      const btnClose = document.querySelector('.btn-close')
+      const btnCancel = document.querySelector('.btn-cancle')
+      const btnConfirm = document.querySelector('.btn-confirm')
+
+       const formatDate = function(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+
+      const updateRenew = async function(borrow, newDuedate){
+        const csrftoken = "{{ csrf_token }}"
+        try {
+          const res = await fetch(`http://127.0.0.1:8000/library/api/borrows/${borrow}/`, {
+            method: "PATCH",
+            headers: { 
+                      'Content-Type': 'application/json',
+                      'X-CSRFToken': csrftoken,
+                      },
+            body: JSON.stringify({"due_date" : formatDate(newDuedate), "renew" : true}),
+          })
+          
+          if(res.ok)
+            location.reload()
+
+          else {
+            alert(await res.json())
+            console.log(await res.json())
+          }
+        } catch(err) {
+          alert(err.message)
+          console.log(err.message)
+        }
+      }
+
+      const showRenewModal = function(e){
+        const bookTitle = e.target.dataset.borrowBook
+        const dueDate = e.target.dataset.borrowDuedate
+        const newDuedate = new Date(new Date(dueDate).setDate(Number(new Date(dueDate).getDate()) + 3))
+
+        confirmModalBg.classList.remove('invisible', 'opacity-0')
+        confirmModalBg.classList.add('visible', 'opacity-100')
+
+        const content = document.querySelector('.confirm-modal__content');
+        content.innerHTML = `
+                            <div>Book : <span class="opacity-[65%] font-light">${bookTitle}</span></div>
+                            <div>Due Date : <span class="opacity-[65%] font-light">${dueDate}</span></div>
+                            <div>New Due Date : <span class="text-[#E07A5F]">${newDuedate.getFullYear()}-${String(newDuedate.getMonth() + 1).padStart(2, 0)}-${String(newDuedate.getDate()).padStart(2, 0)}</span></div>
+                            `
+        btnClose.addEventListener('click', closeModal)
+        btnCancel.addEventListener('click', closeModal)
+        confirmModalBg.addEventListener('click', closeBgModal)
+
+        btnConfirm.addEventListener('click', () => updateRenew(e.target.dataset.borrow, newDuedate))
+
+      }
+
+      const closeBgModal = function(e){
+        if(e.target.closest('.confirm-modal')){
+          return;
+        }
+
+        confirmModalBg.classList.add('invisible', 'opacity-0')
+        confirmModalBg.classList.remove('visible', 'opacity-100')
+      }
+
+      const closeModal = function(){
+        confirmModalBg.classList.add('invisible', 'opacity-0')
+        confirmModalBg.classList.remove('visible', 'opacity-100')
+      }
+
+      if(btnRenews){
+        btnRenews.forEach(br => br.addEventListener('click', (e) => showRenewModal(e)))
+      }
+    </script>
 {% endblock %}
