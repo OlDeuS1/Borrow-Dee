@@ -250,7 +250,9 @@ class AddRatingBookView(LoginRequiredMixin, PermissionRequiredMixin, View):
         return redirect('borrowing_history')
 
 # Dashboard View
-class DashboardView(View):
+class DashboardView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = 'login'
+    permission_required = ['library.add_book', 'library.view_book', 'library.change_book', 'library.delete_book']
 
     def get(self, request):
         user_total = Member.objects.count()
@@ -268,7 +270,9 @@ class DashboardView(View):
         return render(request, "dashboard.html", context)
 
 # Book Management Views
-class BookManagementView(View):
+class BookManagementView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = 'login'
+    permission_required = ['library.add_book', 'library.view_book', 'library.change_book', 'library.delete_book']
 
     def get(self, request):
         search_query = request.GET.get('search', '')
@@ -291,8 +295,10 @@ class BookManagementView(View):
         }
         return render(request, "book_management.html", context)
 
-class AddBookView(View):
-    
+class AddBookView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = 'login'
+    permission_required = ['library.add_book']
+
     def get(self, request):
         form = BookForm()
         return render(request, "add_book.html", {"form": form})
@@ -340,8 +346,10 @@ class AddBookView(View):
             form.data = request.POST
             return render(request, "add_book.html", {"form": form})
     
-class EditBookView(View):
-    
+class EditBookView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = 'login'
+    permission_required = ['library.change_book']
+
     def get(self, request, book_id):
         book = get_object_or_404(Book, id=book_id)
         form = BookForm(instance=book)
@@ -395,15 +403,19 @@ class EditBookView(View):
             form.data = request.POST
             return render(request, "edit_book.html", {"form": form, "book": book})
 
-class BookDelete(View):
-    
+class BookDelete(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = 'login'
+    permission_required = ['library.delete_book']
+
     def get(self, request, book_id):
         book = get_object_or_404(Book, id=book_id)
         book.delete()
         return redirect('book_management')
 
 # Category Management Views
-class CategoryManagementView(View):
+class CategoryManagementView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = 'login'
+    permission_required = ['library.add_category', 'library.change_category', 'library.delete_category', 'library.view_category']
 
     def get(self, request):
         form = CategoryForm()
@@ -447,15 +459,19 @@ class CategoryManagementView(View):
 
         return redirect("category_management")
     
-class CategoryDelete(View):
-    
+class CategoryDelete(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = 'login'
+    permission_required = ['library.delete_category']
+
     def get(self, request, category_id):
         category = get_object_or_404(Category, id=category_id)
         category.delete()
         return redirect('category_management')
 
 # Loan Management View
-class LoanManagementView(View):
+class LoanManagementView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = 'login'
+    permission_required = ['library.can_view_all_borrow', 'library.can_update_borrow_status']
 
     def get(self, request):
 
@@ -477,7 +493,10 @@ class LoanManagementView(View):
         }
         return render(request, "loan_management.html", context)
     
-class UpdateBorrowStatusView(View):
+class UpdateBorrowStatusView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = 'login'
+    permission_required = ['library.can_update_borrow_status']
+
     def get(self, request, borrow_id):
         borrow = get_object_or_404(Borrow, id=borrow_id)
         new_status = request.GET.get('status')
@@ -490,7 +509,9 @@ class UpdateBorrowStatusView(View):
         return redirect('loan_management')
 
 # Reservation Management View
-class ReservationManagementView(View):
+class ReservationManagementView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = 'login'
+    permission_required = ['library.can_view_all_reservation', 'library.can_update_reservation_status']
 
     def get(self, request):
 
@@ -510,7 +531,9 @@ class ReservationManagementView(View):
         }
         return render(request, "reservation_management.html", context)
     
-class ReservationUpdate(View):
+class ReservationUpdate(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = 'login'
+    permission_required = ['library.can_update_reservation_status']
 
     def get(self, request, reserve_id):
         reserve = get_object_or_404(Reservation, id=reserve_id)
@@ -524,7 +547,9 @@ class ReservationUpdate(View):
         return redirect("reservation_management")
     
 # User Management View
-class UserManagementView(View):
+class UserManagementView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = 'login'
+    permission_required = ['library.can_view_all_member', 'library.can_view_member_history']
 
     def get(self, request):
         user_list = Member.objects.all()
@@ -539,7 +564,9 @@ class UserManagementView(View):
 
         return render(request, "user_management.html", context)
 
-class UserHistoryView(View):
+class UserHistoryView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = 'login'
+    permission_required = ['library.can_view_member_history']
 
     def get(self, request, user_id):
         search_query = request.GET.get('search', '')
