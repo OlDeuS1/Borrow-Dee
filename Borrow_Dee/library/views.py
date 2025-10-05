@@ -195,9 +195,9 @@ class BrowseView(View):
         return render(request, "browse.html", context)
 
 # BookDetail page
-class BookDetailView(LoginRequiredMixin, PermissionRequiredMixin, View):
-    login_url = 'login'
-    permission_required = ["library.can_borrow_book", 'library.can_reserve_book', 'library.view_book']
+class BookDetailView(View):
+    # login_url = 'login'
+    # permission_required = ["library.can_borrow_book", 'library.can_reserve_book', 'library.view_book']
     
     def get(self, request, book_id):
         book = Book.objects.annotate(avg_rating=Avg('rating__score', default=0)).get(id=book_id)

@@ -18,7 +18,7 @@
             <div class="book-detail-publish"><strong class="font-semibold">Publish Date : </strong>{{ book.published_date|date:"d F, Y" }}</div>
             <div class="book-detail-copies mb-6"><strong class="font-semibold">Copies Avaliable : </strong>{{ book.copies_available }}</div>
             <div class="book-detail-description"><strong class="font-semibold">Detail : </strong><br>{{ book.description }}</div>
-            {% if user.is_authenticated %}
+            {% if perms.library.can_borrow_book and perms.library.can_reserve_book and perms.library.view_book  %}
                 {% if borrowed %}
                     <button disabled class="btn-borrowing inline-block mt-14 px-10 py-2 bg-gray-500 text-white rounded-[3rem] transition-all shadow-xl">
                         Borrowing

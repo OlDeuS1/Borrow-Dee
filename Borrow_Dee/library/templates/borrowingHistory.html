@@ -58,6 +58,7 @@
         <div class="confirm-modal__title text-[2.4rem] text-center mb-6">Renew</div>
         <form class="form-review" action="" method="post" class="px-4 flex flex-col">
           {% csrf_token %}
+          {{ form.non_field_errors }}
           <div class="flex flex-col gap-14 w-full mb-17">
             <div class="review__input relative w-full">
               <label class="absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="{{ form.score.id_for_label }}">Score</label>
