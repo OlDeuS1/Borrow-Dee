@@ -457,6 +457,8 @@ class UpdateBorrowStatusView(View):
         new_status = request.GET.get('status')
 
         borrow.status = new_status
+        if new_status == 'returned':
+            borrow.return_date = date.today()
         borrow.save()
         print(f"Borrow {borrow_id} status updated to {new_status}")
         return redirect('loan_management')
