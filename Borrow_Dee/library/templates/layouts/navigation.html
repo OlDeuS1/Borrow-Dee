@@ -21,7 +21,7 @@
                 <ul class="user-list overflow-hidden z-4 text-[1.4rem] hidden text-center absolute top-[100%] left-1/2 -translate-x-1/2 w-[80%] bg-[#403D39] text-white rounded-b-[2rem]">
                     <li><a href="{% url 'myborrows' %}" class="w-full inline-block p-4 transition-all hover:bg-[#5D5953]">My borrows</a></li>
                     <li><a href="{% url 'myreservations' %}" class="w-full inline-block p-4 transition-all hover:bg-[#5D5953]">My Reservations</a></li>
-                    <li><a href="#" class="w-full inline-block p-4 transition-all hover:bg-[#5D5953]">History</a></li>
+                    <li><a href="{% url 'borrowing_history' %}" class="w-full inline-block p-4 transition-all hover:bg-[#5D5953]">History</a></li>
                     <li><a href="{% url 'logout' %}" class="w-full inline-block p-4 text-center text-red-500 transition-all hover:bg-[#5D5953]">Logout</a></li>
                 </ul>
             </div>

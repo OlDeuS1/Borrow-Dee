@@ -219,7 +219,33 @@ class MyReservationsView(LoginRequiredMixin, PermissionRequiredMixin, View):
     def get(self, request):
         reservations = Reservation.objects.filter(member__username = request.user.username).exclude(status = 'completed').order_by('-reservation_date')
         return render(request, 'myreservations.html', {"reservations": reservations})
-    
+
+# BorrowingHistory page
+class BorrowingHistoryView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = 'login'
+    permission_required = ["library.can_view_own_borrow_history", 'library.can_rating_book']
+
+    def get(self, request):
+        borrows = Borrow.objects.annotate(isRating = Count('book__rating')).filter(member__username = request.user.username, status = 'returned').order_by('-borrow_date')
+        form = RatingForm()
+        return render(request, 'borrowingHistory.html', {"borrows" : borrows, "form": form})
+
+class AddRatingBookView(LoginRequiredMixin, PermissionRequiredMixin, View):
+    login_url = 'login'
+    permission_required = ['library.can_rating_book']
+
+    def post(self, request, book_id):
+        form = RatingForm(request.POST)
+        book = Book.objects.get(id = book_id)
+        member = Member.objects.get(username = request.user.username)
+        if form.is_valid():
+            rating = form.save(commit=False)
+            rating.book = book
+            rating.member = member
+            rating.save()
+            
+        return redirect('borrowing_history')
+
 # Dashboard View
 class DashboardView(View):
 

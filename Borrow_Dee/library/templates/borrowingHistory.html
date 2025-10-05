@@ -1,0 +1,134 @@
+{% extends "layouts/layout.html" %}
+{% load static %}
+
+{% block title %} Borrowing History {% endblock %}
+
+{% block header %}
+    {% include "layouts/navigation.html" %}
+{% endblock %}
+
+{% block content %}
+    <div class="borrowing-history">
+      <h1 class="borrowing-history__title text-[4.2rem] mb-25">Borrowing History</h1>
+      <div class="borrowing-history__content">
+        {% if borrows.count > 0 %}
+          <table class="borrowing-history__table border-collapse w-full">
+            {% for borrow in borrows %}
+              <tr class="borrowing-history__row border-t border-gray-300 text-[1.6rem]">
+                <td class="borrowing-history__data py-8 align-middle">
+                  <img class="w-[15rem]" src="{% if borrow.book.image %}{{ borrow.book.image }}{% else %}{% static 'images/No_image_available.svg' %}{% endif %}" alt="{{ borrow.book.title }}">
+                </td>
+                <td class="borrowing-history__data py-8">
+                  {{ borrow.book.title }}
+                  <div class="text-gray-500 text-[1.4rem]">{{ borrow.book.author.all|join:", " }}</div>
+                </td>
+                <td class="borrowing-history__data py-8">
+                  Borrowed Date
+                  <div class="text-gray-500 text-[1.4rem]">{{ borrow.borrow_date|date:"d F, Y" }}</div>
+                </td>
+                <td class="borrowing-history__data py-8">
+                  Due Date
+                  <div class="text-gray-500 text-[1.4rem]">{{ borrow.due_date|date:"d F, Y" }}</div>
+                </td>
+                <td class="borrowing-history__data py-8">
+                  Return Date
+                  <div class="{% if borrow.return_date > borrow.due_date %}text-red-500{% else %}text-gray-500{% endif %} text-[1.4rem]">{{ borrow.return_date|date:"d F, Y" }}</div>
+                </td>
+                <td class="borrowing-history__data py-8">
+                  Status
+                  <div class="text-gray-500 text-[1.4rem] {% if borrow.status == 'overdue' %}text-red-500{% endif%}">{{ borrow.status }}</div>
+                </td>
+                <td class="borrowing-history__data py-8 text-center">
+                  {% if borrow.isRating %}
+                    <button disabled class="btn-no-review inline-block text-white px-8 py-3 rounded-[3rem] bg-gray-500 transition-all shadow-xl">Write a Review</button>
+                  {% else %}
+                    <button data-book="{{ borrow.book.title }}" data-url="{% url 'add_rating_book' borrow.book.id %}" class="btn-review inline-block cursor-pointer text-white px-8 py-3 rounded-[3rem] bg-[#E07A5F] transition-all hover:bg-[#ba5e49] shadow-xl">Write a Review</button>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </table>
+        {% else %}
+          <div class="text-center p-8 text-gray-400">No borrows yet.</div>
+        {% endif %}
+      </div>
+    </div>
+    <div class="confirm-modal-bg invisible opacity-0 transition-all h-screen backdrop-blur-[2px] w-full fixed top-0 left-0 z-20" style="background-color: rgba(0, 0, 0, 0.3);">
+      <div class="confirm-modal max-w-[40rem] w-full bg-[#403D39] flex flex-col gap-6 p-8 rounded-[2rem] absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white">
+        <div class="confirm-modal__title text-[2.4rem] text-center mb-6">Renew</div>
+        <form class="form-review" action="" method="post" class="px-4 flex flex-col">
+          {% csrf_token %}
+          <div class="flex flex-col gap-14 w-full mb-17">
+            <div class="review__input relative w-full">
+              <label class="absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="{{ form.score.id_for_label }}">Score</label>
+              {{ form.score }}
+            </div>
+            <div class="review__textarea relative w-full">
+              <label class="absolute -top-[1.25rem] left-[1.25rem] bg-[#403D39] p-y[.25rem] px-[1.25rem] text-[1.4rem] rounded-[3rem]" for="{{ form.comment.id_for_label }}">Comment</label>
+              {{ form.comment }}
+            </div>
+          </div>
+          <div class="confirm-modal__action ml-auto mt-8 justify-self-start">
+            <button class="btn-cancle py-2 px-8 border border-gray-500 rounded-[3rem] mr-3 cursor-pointer hover:border-gray-400 transition-all">Cancel</button>
+            <button type="submit" class="btn-confirm cursor-pointer font-semibold py-2 px-8 text-white bg-[#E07A5F] hover:bg-[#ba5e49] rounded-[3rem] shadow-xl transition-all">Confirm</ิ>
+          </div>
+        </form>
+        <div class="btn-close absolute -top-5 -right-5 bg-[#A9907E] p-2 rounded-[50%] cursor-pointer hover:bg-[#8c7869] transition-all">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#403D39" viewBox="0 0 256 256">
+            <path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script>
+      const btnReview = document.querySelectorAll('.btn-review')
+      const confirmModalBg = document.querySelector('.confirm-modal-bg')
+      const confirmModal = document.querySelector('.confirm-modal')
+      const btnClose = document.querySelector('.btn-close')
+      const btnCancel = document.querySelector('.btn-cancle')
+      const btnConfirm = document.querySelector('.btn-confirm')
+
+      const showReviewModal = function(e){
+        const bookTitle = e.target.dataset.book
+        const url = e.target.dataset.url
+
+        confirmModalBg.classList.remove('invisible', 'opacity-0')
+        confirmModalBg.classList.add('visible', 'opacity-100')
+
+        const contentTitle = document.querySelector('.confirm-modal__title');
+        contentTitle.textContent = bookTitle
+
+        document.querySelector('.form-review').setAttribute('action', url)
+
+        btnClose.addEventListener('click', closeModal)
+        btnCancel.addEventListener('click', closeModal)
+        confirmModalBg.addEventListener('click', closeBgModal)
+      }
+
+      const closeBgModal = function(e){
+        if(e.target.closest('.confirm-modal')){
+          return;
+        }
+
+        confirmModalBg.classList.add('invisible', 'opacity-0')
+        confirmModalBg.classList.remove('visible', 'opacity-100')
+
+        document.querySelector('.review__input').querySelector('input').value = ''
+        document.querySelector('.review__textarea').querySelector('textarea').value = ''
+      }
+
+      const closeModal = function(){
+        confirmModalBg.classList.add('invisible', 'opacity-0')
+        confirmModalBg.classList.remove('visible', 'opacity-100')
+
+        document.querySelector('.review__input').querySelector('input').value = ''
+        document.querySelector('.review__textarea').querySelector('textarea').value = ''
+      }
+
+      if(btnReview){
+        btnReview.forEach(br => br.addEventListener('click', (e) => showReviewModal(e)))
+      }
+    </script>
+{% endblock %}

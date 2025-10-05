@@ -43,9 +43,9 @@ class Book(models.Model):
         ]
     
 class Member(models.Model):
-    username = models.CharField(max_length=150)
+    username = models.CharField(max_length=150, unique=True)
     email = models.EmailField(unique=True)
-    phone_number = models.CharField(max_length=15, blank=True, null=True)
+    phone_number = models.CharField(max_length=15, blank=True, null=True, unique=True)
     address = models.TextField(blank=True, null=True)
 
     def __str__(self):
