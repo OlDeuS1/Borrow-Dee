@@ -62,22 +62,30 @@
                     <td class="px-4 py-3 font-semibold align-middle">{{ book.title }}</td>
                     <td class="px-4 py-3 align-middle">
                         <div class="space-y-1 flex flex-col gap-1">
-                            {% for author in book.author.all %}
-                                <span class="status-badge status-available self-start ">{{ author.name }}</span>
-                            {% endfor %}
+                            {% if book.author.count == 0 %}
+                                <span class="status-badge status-available self-start">Unknown Author</span>
+                            {% else %}
+                                {% for author in book.author.all %}
+                                    <span class="status-badge status-available self-start ">{{ author.name }}</span>
+                                {% endfor %}
+                            {% endif %}
                         </div>
                     </td>
                     <td class="px-4 py-3 align-middle">
                         <div class="space-y-1 flex flex-col gap-1">
-                            {% for category in book.category.all %}
-                                <span class="status-badge status-available self-start">{{ category.name }}</span>
-                            {% endfor %}
+                            {% if book.category.count == 0 %}
+                                <span class="status-badge status-available self-start">Uncategorized</span>
+                            {% else %}
+                                {% for category in book.category.all %}
+                                    <span class="status-badge status-available self-start">{{ category.name }}</span>
+                                {% endfor %}
+                            {% endif %}
                         </div>
                     </td>
                     <td class="px-4 py-3 align-middle">{{ book.isbn_number }}</td>
                     <td class="px-4 py-3 align-top align-middle">{{ book.amount }}</td>
                     <td class="px-4 py-3 align-top align-middle">
-                        {% if book.available_count > 0 %}
+                        {% if book.copies_available > 0 %}
                             <span class="status-badge status-available">Available</span>
                         {% else %}
                             <span class="status-badge status-borrowed">Unavailable</span>

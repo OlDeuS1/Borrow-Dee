@@ -277,9 +277,7 @@ class BookManagementView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
     def get(self, request):
         search_query = request.GET.get('search', '')
-        books = Book.objects.annotate(
-            available_count=F('amount') - Count('borrow', filter=Q(borrow__status__in=['borrowed', 'overdue']))
-        )
+        books = Book.objects.annotate(available_count=F('amount') - Count('borrow', filter=Q(borrow__status__in=['borrowed', 'overdue'])) - Count('reservation', filter=Q(reservation__status__in = ['ready', 'waiting'])))
         if search_query:
             books = books.filter(title__icontains=search_query)
         book_total = books.count()
@@ -343,9 +341,10 @@ class AddBookView(LoginRequiredMixin, PermissionRequiredMixin, View):
             except Exception as e:
                 print(f"Error during book creation: {e}")
                 form.add_error(None, "An error occurred while creating the book.")
-        else:
-            form.data = request.POST
-            return render(request, "add_book.html", {"form": form})
+        
+        # Return the form with errors (either from exception or form validation)
+        form.data = request.POST
+        return render(request, "add_book.html", {"form": form})
     
 class EditBookView(LoginRequiredMixin, PermissionRequiredMixin, View):
     login_url = 'login'
@@ -395,6 +394,16 @@ class EditBookView(LoginRequiredMixin, PermissionRequiredMixin, View):
                                 category_obj, created = Category.objects.get_or_create(name=category_value.strip())
                                 book.category.add(category_obj)
 
+                    waiting_reservations = Reservation.objects.filter(
+                        book=book, 
+                        status=Reservation.choices.WAITING
+                    ).order_by('reservation_date')
+                    
+                    if waiting_reservations.exists():
+                        first_waiting = waiting_reservations.first()
+                        first_waiting.status = Reservation.choices.READY
+                        first_waiting.save()
+                        print(f"Reservation {first_waiting.id} status updated to ready")
                     print(f"Book '{book.title}' updated successfully")
                     return redirect("book_management")
             except Exception as e:
@@ -505,6 +514,18 @@ class UpdateBorrowStatusView(LoginRequiredMixin, PermissionRequiredMixin, View):
         borrow.status = new_status
         if new_status == 'returned':
             borrow.return_date = date.today()
+                    
+            waiting_reservations = Reservation.objects.filter(
+                book=borrow.book, 
+                status=Reservation.choices.WAITING
+            ).order_by('reservation_date')
+            
+            if waiting_reservations.exists():
+                first_waiting = waiting_reservations.first()
+                first_waiting.status = Reservation.choices.READY
+                first_waiting.save()
+                print(f"Reservation {first_waiting.id} status updated to ready")
+             
         borrow.save()
         print(f"Borrow {borrow_id} status updated to {new_status}")
         return redirect('loan_management')
