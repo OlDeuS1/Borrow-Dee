@@ -116,19 +116,22 @@ class RegisterView(View):
         form = RegisterForm(data=request.POST)
         mem_form = MemberForm(data=request.POST)
         if form.is_valid() and mem_form.is_valid():
-            user = form.save()
-            mem = mem_form.save(commit=False)
-            mem.username = user.username
-            mem.email = user.email
-            mem.save()
+            try:
+                with transaction.atomic():
+                    user = form.save()
+                    mem = mem_form.save(commit=False)
+                    mem.username = user.username
+                    mem.email = user.email
+                    mem.save()
 
-            member_group = Group.objects.get(name='Member')
-            user.groups.add(member_group)
+                    member_group = Group.objects.get(name='Member')
+                    user.groups.add(member_group)
 
-            login(request, user)
-            print(f" {user} registration successful")
-            return redirect("home")
-        
+                    login(request, user)
+                    print(f" {user} registration successful")
+                    return redirect("home")
+            except Exception as e:
+                print(f"Error during registration: {e}")
         return render(request, "register.html", {"form": form, "mem_form": mem_form})
 
 # Home page
@@ -302,33 +305,37 @@ class AddBookView(View):
         
         form = BookForm(post_data, request.FILES)
         if form.is_valid():
-            book = form.save(commit=False)
-            book.save()
-            
-            author_list = request.POST.getlist('author')
-            for author_value in author_list:
-                try:
-                    author_id = int(author_value)
-                    author_obj = Author.objects.get(id=author_id)
-                    book.author.add(author_obj)
-                except (ValueError, Author.DoesNotExist):
-                    if author_value.strip():
-                        author_obj, created = Author.objects.get_or_create(name=author_value.strip())
-                        book.author.add(author_obj)
+            try:
+                with transaction.atomic():
+                    book = form.save(commit=False)
+                    book.save()
+                    author_list = request.POST.getlist('author')
+                    for author_value in author_list:
+                        try:
+                            author_id = int(author_value)
+                            author_obj = Author.objects.get(id=author_id)
+                            book.author.add(author_obj)
+                        except (ValueError, Author.DoesNotExist):
+                            if author_value.strip():
+                                author_obj, created = Author.objects.get_or_create(name=author_value.strip())
+                                book.author.add(author_obj)
+                    category_list = request.POST.getlist('category')
+                    
+                    for category_value in category_list:
+                        try:
+                            category_id = int(category_value)
+                            category_obj = Category.objects.get(id=category_id)
+                            book.category.add(category_obj)
+                        except (ValueError, Category.DoesNotExist):
+                            if category_value.strip():
+                                category_obj, created = Category.objects.get_or_create(name=category_value.strip())
+                                book.category.add(category_obj)
 
-            category_list = request.POST.getlist('category')
-            for category_value in category_list:
-                try:
-                    category_id = int(category_value)
-                    category_obj = Category.objects.get(id=category_id)
-                    book.category.add(category_obj)
-                except (ValueError, Category.DoesNotExist):
-                    if category_value.strip():
-                        category_obj, created = Category.objects.get_or_create(name=category_value.strip())
-                        book.category.add(category_obj)
-            
-            print(f"Book '{book.title}' created successfully")
-            return redirect("book_management")
+                    print(f"Book '{book.title}' created successfully")
+                    return redirect("book_management")
+            except Exception as e:
+                print(f"Error during book creation: {e}")
+                form.add_error(None, "An error occurred while creating the book.")
         else:
             form.data = request.POST
             return render(request, "add_book.html", {"form": form})
@@ -349,36 +356,41 @@ class EditBookView(View):
         book = get_object_or_404(Book, id=book_id)
         form = BookForm(post_data, request.FILES, instance=book)
         if form.is_valid():
-            book = form.save(commit=False)
-            book.save()
-            
-            book.author.clear()
-            book.category.clear()
-            
-            author_list = request.POST.getlist('author')
-            for author_value in author_list:
-                try:
-                    author_id = int(author_value)
-                    author_obj = Author.objects.get(id=author_id)
-                    book.author.add(author_obj)
-                except (ValueError, Author.DoesNotExist):
-                    if author_value.strip():
-                        author_obj, created = Author.objects.get_or_create(name=author_value.strip())
-                        book.author.add(author_obj)
+            try:
+                with transaction.atomic():
+                    book = form.save(commit=False)
+                    book.save()
 
-            category_list = request.POST.getlist('category')
-            for category_value in category_list:
-                try:
-                    category_id = int(category_value)
-                    category_obj = Category.objects.get(id=category_id)
-                    book.category.add(category_obj)
-                except (ValueError, Category.DoesNotExist):
-                    if category_value.strip():
-                        category_obj, created = Category.objects.get_or_create(name=category_value.strip())
-                        book.category.add(category_obj)
+                    book.author.clear()
+                    book.category.clear()
             
-            print(f"Book '{book.title}' updated successfully")
-            return redirect("book_management")
+                    author_list = request.POST.getlist('author')
+                    for author_value in author_list:
+                        try:
+                            author_id = int(author_value)
+                            author_obj = Author.objects.get(id=author_id)
+                            book.author.add(author_obj)
+                        except (ValueError, Author.DoesNotExist):
+                            if author_value.strip():
+                                author_obj, created = Author.objects.get_or_create(name=author_value.strip())
+                                book.author.add(author_obj)
+
+                    category_list = request.POST.getlist('category')
+                    for category_value in category_list:
+                        try:
+                            category_id = int(category_value)
+                            category_obj = Category.objects.get(id=category_id)
+                            book.category.add(category_obj)
+                        except (ValueError, Category.DoesNotExist):
+                            if category_value.strip():
+                                category_obj, created = Category.objects.get_or_create(name=category_value.strip())
+                                book.category.add(category_obj)
+
+                    print(f"Book '{book.title}' updated successfully")
+                    return redirect("book_management")
+            except Exception as e:
+                print(f"Error during book update: {e}")
+                form.add_error(None, "An error occurred while updating the book.")
         else:
             form.data = request.POST
             return render(request, "edit_book.html", {"form": form, "book": book})
@@ -471,6 +483,8 @@ class UpdateBorrowStatusView(View):
         new_status = request.GET.get('status')
 
         borrow.status = new_status
+        if new_status == 'returned':
+            borrow.return_date = date.today()
         borrow.save()
         print(f"Borrow {borrow_id} status updated to {new_status}")
         return redirect('loan_management')

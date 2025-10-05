@@ -41,6 +41,7 @@
           <th class="py-3 px-4 font-medium">Book</th>
           <th class="py-3 px-4 font-medium">Loan Date</th>
           <th class="py-3 px-4 font-medium">Due Date</th>
+          <th class="py-3 px-4 font-medium">Return Date</th>
           <th class="py-3 px-4 font-medium">Status</th>
           <th class="py-3 px-4 font-medium text-center">Actions</th>
         </tr>
@@ -54,6 +55,7 @@
             <td class="px-4 py-3 align-top">{{ loan.book.title }}</td>
             <td class="px-4 py-3 align-top">{{ loan.borrow_date }}</td>
             <td class="px-4 py-3 align-top">{{ loan.due_date }}</td>
+            <td class="px-4 py-3 align-top {% if loan.return_date > loan.due_date %}text-red-500{% endif %}">{{ loan.return_date }}</td>
             <td class="px-4 py-3 align-top">
               {% if loan.status == 'borrowed' %}
                 <span class="status-badge status-available" style="background:rgba(76,206,255,.15);color:#4CCEFF">{{ loan.status }}</span>
