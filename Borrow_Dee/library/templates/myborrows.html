@@ -16,7 +16,7 @@
             {% for borrow in borrows %}
               <tr class="my-borrows__row border-t border-gray-300 text-[1.6rem]">
                 <td class="my-borrows__data py-8 align-middle">
-                  <img class="w-[15rem]" src="{% if borrow.book.image %}{{ borrow.book.image }}{% else %}{% static 'images/No_image_available.svg' %}{% endif %}" alt="{{ borrow.book.title }}">
+                  <img class="w-[15rem]" src="{% if borrow.book.image %}{{ borrow.book.image.url }}{% else %}{% static 'images/No_image_available.svg' %}{% endif %}" alt="{{ borrow.book.title }}">
                 </td>
                 <td class="my-borrows__data py-8">
                   {{ borrow.book.title }}

@@ -20,7 +20,7 @@
                     {% for book in books %}
                         <a href="{% url 'book_detail' book.id %}" class="border-gray-300 border rounded-[1.5rem] hover:scale-[105%] transition-all">
                             <div class="book text-center relative">
-                                <img src="{% if book.image %}{{ book.image }}{% else %} {% static 'images/No_image_available.svg' %} {% endif %}" alt="{{ book.title }}">
+                                <img src="{% if book.image %}{{ book.image.url }}{% else %} {% static 'images/No_image_available.svg' %} {% endif %}" alt="{{ book.title }}">
                                 <div class="book-detail flex flex-col justify-between items-center gap-[.3rem] mt-6 p-2">
                                     <div class="text-[1.6rem]">{{ book.title }}</div>
                                     <p class="text-[#E07A5F] text-[1.4rem]">Rating : {% if book.avg_rating %} {{ book.avg_rating }} {% else %} N/A {% endif %}</p>
