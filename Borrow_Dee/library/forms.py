@@ -195,3 +195,21 @@ class MemberForm(ModelForm):
             }),
         }
 
+class RatingForm(ModelForm):
+    class Meta:
+        model = Rating
+        fields = ['score', 'comment']
+        widgets = {
+            'score': NumberInput(attrs={
+                'class': 'bg-white rounded-[1.5rem] w-full p-6 text-[#403D39] text-[1.6rem] border-2 border-[#E07A5F] focus:border-[#ba5e49] focus:outline-none transition-all',
+                'min': 1, 
+                'max': 5,
+                'placeholder': 'enter your rating here here.',
+                'required': True,
+            }),
+            'comment': Textarea(attrs={
+                'class': 'bg-white rounded-[1.5rem] w-full p-6 text-[#403D39] text-[1.6rem] border-2 border-[#E07A5F] focus:border-[#ba5e49] focus:outline-none transition-all',
+                'rows': 4,
+                'placeholder': 'enter your comment here.',
+            })
+        }

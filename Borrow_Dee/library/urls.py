@@ -9,8 +9,10 @@ urlpatterns = [
     path("register/", views.RegisterView.as_view(), name="register"),
     path("browse/", views.BrowseView.as_view(), name="browse"),
     path("books/<int:book_id>/", views.BookDetailView.as_view(), name="book_detail"),
+    path("books/<int:book_id>/rating/", views.AddRatingBookView.as_view(), name="add_rating_book"),
     path("myborrows/", views.MyBorrowsView.as_view(), name="myborrows"),
     path("myreservations/", views.MyReservationsView.as_view(), name="myreservations"),
+    path("borrowingHistory/", views.BorrowingHistoryView.as_view(), name="borrowing_history"),
 
     # Dashboard
     path("dashboard/", views.DashboardView.as_view(), name="dashboard"),
