@@ -50,7 +50,17 @@
                         <td class="px-4 py-3 align-top">{{ reserve.member.username }}</td>
                         <td class="px-4 py-3 align-top font-semibold">{{ reserve.book.title }}</td>
                         <td class="px-4 py-3 align-top">{{ reserve.reservation_date }}</td>
-                        <td class="px-4 py-3 align-top"><span class="status-badge">{{ reserve.status }}</span></td>
+                        <td class="px-4 py-3 align-top">
+                            {% if reserve.status == 'waiting' %}
+                            <span class="status-badge status-pending" style="background:rgba(255,200,0,.15);color:#F8D347">{{ reserve.status }}</span>
+                            {% elif reserve.status == 'ready' %}
+                            <span class="status-badge status-available">{{ reserve.status }}</span>
+                            {% elif reserve.status == 'completed' %}
+                            <span class="status-badge status-available" style="background:rgba(76,206,255,.15);color:#4CCEFF">{{ reserve.status }}</span>
+                            {% elif reserve.status == 'cancelled' %}
+                            <span class="status-badge status-borrowed" style="color:#FF6B6B;background:rgba(255,76,76,.15)">{{ reserve.status }}</span>
+                            {% endif %}
+                        </td>
                         <td class="px-4 py-3 align-top">
                             {% if reserve.status == 'ready' %}
                             <a href="{% url 'update_reservation_status' reserve.id %}"

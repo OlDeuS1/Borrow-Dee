@@ -346,7 +346,7 @@ class AddBookView(LoginRequiredMixin, PermissionRequiredMixin, View):
                 form.add_error(None, "An error occurred while creating the book.")
         
         # Return the form with errors (either from exception or form validation)
-        form.data = request.POST
+        form.data = post_data
         return render(request, "add_book.html", {"form": form})
     
 class EditBookView(LoginRequiredMixin, PermissionRequiredMixin, View):
@@ -569,6 +569,16 @@ class ReservationUpdate(LoginRequiredMixin, PermissionRequiredMixin, View):
             member=reserve.member,
             status='borrowed',
         )
+        waiting_reservations = Reservation.objects.filter(
+            book=reserve.book,
+            status=Reservation.choices.WAITING
+        ).order_by('reservation_date')
+        
+        if waiting_reservations.exists():
+            first_waiting = waiting_reservations.first()
+            first_waiting.status = Reservation.choices.READY
+            first_waiting.save()
+            print(f"Reservation {first_waiting.id} status updated to ready")
         return redirect("reservation_management")
     
 # User Management View
