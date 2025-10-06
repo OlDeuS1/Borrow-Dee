@@ -13,7 +13,7 @@
         <div class="book-detail__content">
             <h1 class="text-[3.2rem]">{{ book.title }}</h1>
             <div class="book-detail-rating text-[#E07A5F] mb-6">Rating : {% if book.avg_rating %} {{ book.avg_rating|floatformat:2 }} {% else %} 0 {% endif %}</div>
-            <div class="book-detail-authors"><strong class="font-semibold">Authors : </strong>{{ book.author.all|join:", " }}</div>
+            <div class="book-detail-authors"><strong class="font-semibold">Authors : </strong>{% if book.author %}{{ book.author.all|join:", " }}{% else %}Uncategorized{% endif %}</div>
             <div class="book-detail-categories"><strong class="font-semibold">Categories : </strong>{{ book.category.all|join:", " }}</div>
             <div class="book-detail-publish"><strong class="font-semibold">Publish Date : </strong>{{ book.published_date|date:"d F, Y" }}</div>
             <div class="book-detail-copies mb-6"><strong class="font-semibold">Copies Avaliable : </strong>{{ book.copies_available }}</div>
