@@ -21,7 +21,7 @@
                             <img src="{% if book.image %}{{ book.image.url }}{% else %} {% static 'images/No_image_available.svg' %} {% endif %}" alt="{{ book.title }}">
                             <div class="popular__book-detail flex flex-col justify-between items-center gap-[.3rem] mt-6 p-2">
                                 <div class="text-[1.6rem]">{{ book.title }}</div>
-                                <p class="text-[#E07A5F] text-[1.4rem]">Rating : {% if book.avg_rating %} {{ book.avg_rating }} {% else %} N/A {% endif %}</p>
+                                <p class="text-[#E07A5F] text-[1.4rem]">Rating : {% if book.avg_rating %} {{ book.avg_rating|floatformat:2 }} {% else %} 0 {% endif %}</p>
                             </div>
                         </div>
                     </a>
@@ -41,7 +41,7 @@
                             <img src="{% if book.image %}{{ book.image.url }}{% else %} {% static 'images/No_image_available.svg' %} {% endif %}" alt="{{ book.title }}">
                             <div class="new__book-detail flex flex-col justify-between items-center gap-[.3rem] mt-6 p-2">
                                 <div class="text-[1.6rem]">{{ book.title }}</div>
-                                <p class="text-[#E07A5F] text-[1.4rem]">Rating : {% if book.avg_rating %} {{ book.avg_rating }} {% else %} N/A {% endif %}</p>
+                                <p class="text-[#E07A5F] text-[1.4rem]">Rating : {% if book.avg_rating %} {{ book.avg_rating|floatformat:2 }} {% else %} 0 {% endif %}</p>
                             </div>
                         </div>
                     </a>
