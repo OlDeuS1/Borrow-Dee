@@ -230,7 +230,10 @@ class BorrowingHistoryView(LoginRequiredMixin, PermissionRequiredMixin, View):
     permission_required = ["library.can_view_own_borrow_history", 'library.can_rating_book']
 
     def get(self, request):
-        borrows = Borrow.objects.annotate(isRating = Count('book__rating')).filter(member__username = request.user.username, status = 'returned').order_by('-borrow_date')
+        borrows = Borrow.objects.filter(
+            member__username=request.user.username,
+            status='returned').annotate(user_rating_count=Count('book__rating', filter=Q(book__rating__member__username=request.user.username))).order_by('-borrow_date')
+        # borrows = Borrow.objects.annotate(isRating = Count('book__rating')).filter(member__username = request.user.username, status = 'returned').order_by('-borrow_date')
         form = RatingForm()
         return render(request, 'borrowingHistory.html', {"borrows" : borrows, "form": form})
 
