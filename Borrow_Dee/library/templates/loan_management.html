@@ -70,13 +70,13 @@
             <td class="px-4 py-3 align-top">
               {% if loan.status == 'returned' %}
                 <span class="text-gray-400 font-medium block text-center">No actions</span>
-              {% elif loan.status == 'pending' %}
-                <a href="{% url 'update_borrow_status' loan.id %}?status=borrowed"
-                   class="action-btn py-2 mx-auto text-white rounded-[3rem] max-w-[70%] bg-[#2C7852] font-medium text-xs block text-center">Approve</a>
-              {% else %}
-                <a href="{% url 'update_borrow_status' loan.id %}?status=returned"
-                   class="action-btn py-2 mx-auto text-white rounded-[3rem] max-w-[70%] bg-[#2C7852] font-medium text-xs block text-center">Receive</a>
-              {% endif %}
+                {% elif loan.status == 'pending' %}
+                <button data-reserve="{{ loan.id }}" data-newstatus="borrowed"
+                    class="btn-approve action-btn px-6 py-2 mx-auto text-white rounded-[3rem] max-w-[70%] bg-[#2C7852] font-medium text-xs block text-center">Approve</button>
+                {% else %}
+                <button data-reserve="{{ loan.id }}" data-newstatus="returned"
+                    class="btn-approve action-btn px-6 py-2 mx-auto text-white rounded-[3rem] max-w-[70%] bg-[#2C7852] font-medium text-xs block text-center">Receive</button>
+                {% endif %}
             </td>
           {% endfor %}
         {% else %}
@@ -88,4 +88,40 @@
     </table>
   </div>
 </div>
+
+<script>
+  const handleApproveReservation = async function (reserveId, newStatus) {
+    const reserve = reserveId
+    const newstatus = newStatus
+    const csrftoken = "{{ csrf_token }}"
+    try {
+      const res = await fetch(`http://127.0.0.1:8000/library/api/loans/${reserve}/`, {
+        method: "PATCH",
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({ status: newstatus }),
+      })
+      if (res.ok)
+        location.reload()
+
+      else {
+        alert(await res.json())
+        console.log(await res.json())
+      }
+    } catch (err) {
+      alert(err.message)
+      console.log(err.message)
+    }
+    console.log('Approve reservation ID:', reserveId)
+    console.log('New status:', newStatus)
+
+  }
+  if (document.querySelectorAll('.btn-approve').length) {
+    document.querySelectorAll('.btn-approve').forEach(b => {
+      b.addEventListener('click', () => handleApproveReservation(b.dataset.reserve, b.dataset.newstatus))
+    })
+  }
+</script>
 {% endblock %}

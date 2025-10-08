@@ -29,7 +29,6 @@ urlpatterns = [
 
     # loan management
     path("dashboard/loans/", views.LoanManagementView.as_view(), name="loan_management"),
-    path('dashboard/loans/<int:borrow_id>/', views.UpdateBorrowStatusView.as_view(), name="update_borrow_status"),
 
     # reservation management
     path("dashboard/reservations/", views.ReservationManagementView.as_view(), name="reservation_management"),
@@ -43,6 +42,7 @@ urlpatterns = [
     path('api/borrows/<int:borrow_id>/', views.BorrowDetail.as_view(), name="borrow-detail"),
     path('api/reservations/', views.ReservationList.as_view(), name="reservation-list"),
     path('api/reservations/<int:reserve_id>/', views.ReservationDetail.as_view(), name="reservation-detail"),
+    path('api/loans/<int:borrow_id>/', views.UpdateBorrowStatusView.as_view(), name="update_borrow_status"),
 
     # TomSelect autocomplete URLs
     path("author-autocomplete/", views.AuthorAutocompleteView.as_view(), name="author-autocomplete"),

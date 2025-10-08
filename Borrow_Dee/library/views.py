@@ -16,7 +16,7 @@ from django.http import Http404, HttpResponseForbidden
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from library.serializers import BorrowSerializer, ReservationSerializer
+from library.serializers import BorrowAdminSerializer, BorrowSerializer, ReservationSerializer
 from datetime import date
 
 # API
@@ -505,33 +505,20 @@ class LoanManagementView(LoginRequiredMixin, PermissionRequiredMixin, View):
             "returned_loans": returned_loans,
         }
         return render(request, "loan_management.html", context)
-    
-class UpdateBorrowStatusView(LoginRequiredMixin, PermissionRequiredMixin, View):
+
+# /api/loans/<int:borrow_id>/
+class UpdateBorrowStatusView(LoginRequiredMixin, PermissionRequiredMixin, APIView):
     login_url = 'login'
     permission_required = ['library.can_update_borrow_status']
 
-    def get(self, request, borrow_id):
+    def patch(self, request, borrow_id, format=None):
         borrow = get_object_or_404(Borrow, id=borrow_id)
-        new_status = request.GET.get('status')
+        serializer = BorrowAdminSerializer(borrow, data=request.data, partial=True)
 
-        borrow.status = new_status
-        if new_status == 'returned':
-            borrow.return_date = date.today()
-                    
-            waiting_reservations = Reservation.objects.filter(
-                book=borrow.book, 
-                status=Reservation.choices.WAITING
-            ).order_by('reservation_date')
-            
-            if waiting_reservations.exists():
-                first_waiting = waiting_reservations.first()
-                first_waiting.status = Reservation.choices.READY
-                first_waiting.save()
-                print(f"Reservation {first_waiting.id} status updated to ready")
-             
-        borrow.save()
-        print(f"Borrow {borrow_id} status updated to {new_status}")
-        return redirect('loan_management')
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Reservation Management View
 class ReservationManagementView(LoginRequiredMixin, PermissionRequiredMixin, View):
