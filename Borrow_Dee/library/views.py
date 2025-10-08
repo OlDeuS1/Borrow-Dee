@@ -556,31 +556,6 @@ class ReservationManagementView(LoginRequiredMixin, PermissionRequiredMixin, Vie
         }
         return render(request, "reservation_management.html", context)
     
-class ReservationUpdate(LoginRequiredMixin, PermissionRequiredMixin, View):
-    login_url = 'login'
-    permission_required = ['library.can_update_reservation_status']
-
-    def get(self, request, reserve_id):
-        reserve = get_object_or_404(Reservation, id=reserve_id)
-        reserve.status = 'completed'
-        reserve.save()
-        Borrow.objects.create(
-            book=reserve.book,
-            member=reserve.member,
-            status='borrowed',
-        )
-        waiting_reservations = Reservation.objects.filter(
-            book=reserve.book,
-            status=Reservation.choices.WAITING
-        ).order_by('reservation_date')
-        
-        if waiting_reservations.exists():
-            first_waiting = waiting_reservations.first()
-            first_waiting.status = Reservation.choices.READY
-            first_waiting.save()
-            print(f"Reservation {first_waiting.id} status updated to ready")
-        return redirect("reservation_management")
-    
 # User Management View
 class UserManagementView(LoginRequiredMixin, PermissionRequiredMixin, View):
     login_url = 'login'

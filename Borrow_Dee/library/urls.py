@@ -33,7 +33,6 @@ urlpatterns = [
 
     # reservation management
     path("dashboard/reservations/", views.ReservationManagementView.as_view(), name="reservation_management"),
-    path('dashboard/reservations/<int:reserve_id>/', views.ReservationUpdate.as_view(), name="update_reservation_status"),
 
     # user management
     path("dashboard/users/", views.UserManagementView.as_view(), name="user_management"),

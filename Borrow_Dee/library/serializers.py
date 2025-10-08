@@ -27,5 +27,22 @@ class ReservationSerializer(serializers.ModelSerializer):
                         first_queue.status = Reservation.choices.READY
                         first_queue.save()
 
+        elif new_status == Reservation.choices.COMPLETED:
+            if old_status == Reservation.choices.READY:
+                instance.status = new_status
+
+                Borrow.objects.create(
+                    book=instance.book,
+                    member=instance.member,
+                    status='borrowed',
+                )
+
+                if old_status == Reservation.choices.READY:
+                    waiting_reserve = Reservation.objects.filter(book=instance.book, status=Reservation.choices.WAITING).order_by('reservation_date')
+                    
+                    if waiting_reserve.exists():
+                        first_queue = waiting_reserve.first()
+                        first_queue.status = Reservation.choices.READY
+                        first_queue.save()
         instance.save()
         return instance
