@@ -153,9 +153,9 @@
 				<button onclick="closeModal()" class="px-8 py-3 rounded-full border-2 border-white/15 text-white hover:bg-white/10 transition-colors font-medium min-w-[84px]">
 					No
 				</button>
-				<a href="#" id="confirmDelete" class="px-8 py-3 rounded-full bg-red-500 hover:bg-red-600 text-white transition-colors font-medium min-w-[84px]">
+				<button onclick="confirmDelete()" id="confirmDeleteBtn" class="px-8 py-3 rounded-full bg-red-500 hover:bg-red-600 text-white transition-colors font-medium min-w-[84px]">
 					Yes
-				</a>
+				</button>
 			</div>
 		</div>
 	</div>
@@ -200,9 +200,15 @@ if (editModal && !editModal.classList.contains('hidden')) {
 }
 
 // Delete Modal Functions
+let currentDeleteUrl = '';
+let currentCategoryId = '';
+
 function openModal(categoryName, deleteUrl) {
 	document.getElementById('categoryName').textContent = categoryName;
-	document.getElementById('confirmDelete').href = deleteUrl;
+	currentDeleteUrl = deleteUrl;
+	// Extract category ID from the delete URL
+	const urlParts = deleteUrl.split('/');
+	currentCategoryId = urlParts[urlParts.length - 2];
 	document.getElementById('deleteModal').classList.remove('hidden');
 	document.getElementById('deleteModal').classList.add('flex');
 }
@@ -210,6 +216,47 @@ function openModal(categoryName, deleteUrl) {
 function closeModal() {
 	document.getElementById('deleteModal').classList.add('hidden');
 	document.getElementById('deleteModal').classList.remove('flex');
+}
+
+const handleDeleteCategory = async function (categoryId) {
+	const csrftoken = "{{ csrf_token }}";
+	const confirmBtn = document.getElementById('confirmDeleteBtn');
+	const originalText = confirmBtn.textContent;
+	
+	// Disable button and show loading state
+	confirmBtn.disabled = true;
+	confirmBtn.textContent = 'Deleting...';
+	confirmBtn.classList.add('opacity-75');
+	
+	try {
+		const res = await fetch(`http://127.0.0.1:8000/library/api/categories/${categoryId}/`, {
+			method: "DELETE",
+			headers: {
+				'Content-Type': 'application/json',
+				'X-CSRFToken': csrftoken,
+			},
+		});
+
+		if (res.ok) {
+			location.reload();
+		} else {
+			const errorData = await res.json();
+			alert(errorData.message || 'Error deleting category. Please try again.');
+			console.log(errorData);
+		}
+	} catch (err) {
+		alert(err.message);
+		console.log(err.message);
+	} finally {
+		// Reset button state
+		confirmBtn.disabled = false;
+		confirmBtn.textContent = originalText;
+		confirmBtn.classList.remove('opacity-75');
+	}
+};
+
+async function confirmDelete() {
+	await handleDeleteCategory(currentCategoryId);
 }
 
 // Simple event delegation for delete button

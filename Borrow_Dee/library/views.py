@@ -416,14 +416,15 @@ class EditBookView(LoginRequiredMixin, PermissionRequiredMixin, View):
             form.data = request.POST
             return render(request, "edit_book.html", {"form": form, "book": book})
 
-class BookDelete(LoginRequiredMixin, PermissionRequiredMixin, View):
+# /api/books/<int:book_id>/
+class BookDelete(LoginRequiredMixin, PermissionRequiredMixin, APIView):
     login_url = 'login'
     permission_required = ['library.delete_book']
 
-    def get(self, request, book_id):
+    def delete(self, request, book_id):
         book = get_object_or_404(Book, id=book_id)
         book.delete()
-        return redirect('book_management')
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 # Category Management Views
 class CategoryManagementView(LoginRequiredMixin, PermissionRequiredMixin, View):
@@ -472,14 +473,14 @@ class CategoryManagementView(LoginRequiredMixin, PermissionRequiredMixin, View):
 
         return redirect("category_management")
     
-class CategoryDelete(LoginRequiredMixin, PermissionRequiredMixin, View):
+class CategoryDelete(LoginRequiredMixin, PermissionRequiredMixin, APIView):
     login_url = 'login'
     permission_required = ['library.delete_category']
 
-    def get(self, request, category_id):
+    def delete(self, request, category_id):
         category = get_object_or_404(Category, id=category_id)
         category.delete()
-        return redirect('category_management')
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 # Loan Management View
 class LoanManagementView(LoginRequiredMixin, PermissionRequiredMixin, View):

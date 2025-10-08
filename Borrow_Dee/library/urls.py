@@ -21,11 +21,9 @@ urlpatterns = [
     path("dashboard/books/", views.BookManagementView.as_view(), name="book_management"),
     path("dashboard/books/add/", views.AddBookView.as_view(), name="add_book"),
     path("dashboard/books/edit/<int:book_id>/", views.EditBookView.as_view(), name="edit_book"),
-    path('dashboard/books/delete/<int:book_id>/', views.BookDelete.as_view(), name="book-delete"),
 
     # category management
     path("dashboard/categories/", views.CategoryManagementView.as_view(), name="category_management"),
-    path('dashboard/categories/delete/<int:category_id>/', views.CategoryDelete.as_view(), name="category-delete"),
 
     # loan management
     path("dashboard/loans/", views.LoanManagementView.as_view(), name="loan_management"),
@@ -43,6 +41,8 @@ urlpatterns = [
     path('api/reservations/', views.ReservationList.as_view(), name="reservation-list"),
     path('api/reservations/<int:reserve_id>/', views.ReservationDetail.as_view(), name="reservation-detail"),
     path('api/loans/<int:borrow_id>/', views.UpdateBorrowStatusView.as_view(), name="update_borrow_status"),
+    path('api/categories/<int:category_id>/', views.CategoryDelete.as_view(), name="category-delete"),
+    path('api/books/<int:book_id>/', views.BookDelete.as_view(), name="book-delete"),
 
     # TomSelect autocomplete URLs
     path("author-autocomplete/", views.AuthorAutocompleteView.as_view(), name="author-autocomplete"),
