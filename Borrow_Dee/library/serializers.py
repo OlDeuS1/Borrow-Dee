@@ -12,22 +12,22 @@ class BorrowAdminSerializer(serializers.ModelSerializer):
         model = Borrow
         fields = ['id', 'book', 'member', 'borrow_date', 'due_date', 'return_date', 'status', 'renew']
 
-        def update(self, instance, validated_data):
-            new_status = validated_data.get('status')
-            old_status = instance.status
-            instance.status = new_status
+    def update(self, instance, validated_data):
+        new_status = validated_data.get('status')
+        old_status = instance.status
+        instance.status = new_status
+        
+        if new_status == Borrow.choices.RETURNED:
+            if old_status in [Borrow.choices.BORROWED, Borrow.choices.OVERDUE]:
+                instance.return_date = date.today()
+                waiting_reserve = Reservation.objects.filter(book=instance.book, status=Reservation.choices.WAITING).order_by('reservation_date')
             
-            if(new_status == Borrow.choices.RETURNED):
-                if old_status == Borrow.choices.BORROWED or old_status == Borrow.choices.OVERDUE:
-                    instance.return_date = date.today()
-                    waiting_reserve = Reservation.objects.filter(book=instance.book, status=Reservation.choices.WAITING).order_by('reservation_date')
-                
-                    if waiting_reserve.exists():
-                        first_queue = waiting_reserve.first()
-                        first_queue.status = Reservation.choices.READY
-                        first_queue.save()
-            instance.save()
-            return instance
+                if waiting_reserve.exists():
+                    first_queue = waiting_reserve.first()
+                    first_queue.status = Reservation.choices.READY
+                    first_queue.save()
+        instance.save()
+        return instance
 
 class ReservationSerializer(serializers.ModelSerializer):
     class Meta:
